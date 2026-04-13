@@ -1,0 +1,426 @@
+/* ========================================
+   Dark / Gaming Theme for react-gameroom example
+   ======================================== */
+
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-surface: #16213e;
+  --border: #0f3460;
+  --accent: #e94560;
+  --accent-glow: rgba(233, 69, 96, 0.4);
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+}
+
+/* ---- Page layouts ---- */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.page-top {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+}
+
+/* ---- Title screen (HomePage) ---- */
+
+.title {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.title-emoji {
+  font-size: 64px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+/* ---- Buttons ---- */
+
+.btn {
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 0 0 16px var(--accent-glow);
+  transition: box-shadow 0.2s, opacity 0.2s;
+}
+
+.btn:hover {
+  box-shadow: 0 0 24px var(--accent-glow), 0 0 48px rgba(233, 69, 96, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+.btn--secondary:hover {
+  background: rgba(233, 69, 96, 0.1);
+}
+
+/* ---- Cards / Surfaces ---- */
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* ---- Inputs ---- */
+
+.input {
+  padding: 10px 14px;
+  font-size: 16px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ---- Error / Status text ---- */
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.text-error {
+  color: #ff6b6b;
+  margin-top: 12px;
+}
+
+/* ---- Room badge ---- */
+
+.room-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- QR code wrapper ---- */
+
+.qr-wrapper {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* ---- Player slots (overrides library inline styles) ---- */
+
+.slot {
+  background: var(--bg-surface);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  min-width: 140px;
+}
+
+.slot--joining {
+  border-style: solid;
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.slot--ready {
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.slot-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.slot-status-ready {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* ---- Lobby layout ---- */
+
+.lobby-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.lobby-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.lobby-ready-count {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+/* ---- Versus screen (game started, host view) ---- */
+
+.vs-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin: 32px 0;
+  flex-wrap: wrap;
+}
+
+.vs-player {
+  text-align: center;
+  min-width: 140px;
+}
+
+.vs-player-name {
+  font-size: 16px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.vs-player-choice {
+  font-size: 72px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.vs-player-choice-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.vs-divider {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.vs-hidden {
+  font-size: 72px;
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.vs-waiting {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+/* ---- Result announcement ---- */
+
+.result-announce {
+  font-size: 32px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
+  margin-top: 24px;
+}
+
+.result-draw {
+  color: var(--text-primary);
+  text-shadow: none;
+}
+
+/* ---- RPS Picker (player mobile view) ---- */
+
+.rps-picker {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.rps-btn {
+  width: 80px;
+  height: 80px;
+  font-size: 36px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rps-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.rps-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---- Info button (room info modal trigger) ---- */
+
+.info-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 12px var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.info-btn:hover {
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ---- Room info modal (dark theme override) ---- */
+
+.room-info-modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.room-info-modal a {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+/* ---- Player page header ---- */
+
+.player-header {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+
+/* ---- Name input group ---- */
+
+.name-input-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+/* ---- Join game page ---- */
+
+.join-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 320px;
+}
+
+.join-form .input {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+/* ---- Back link ---- */
+
+.back-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 24px;
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
