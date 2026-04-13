@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import type { RoomState } from "../types/room";
 import { RoomQRCode } from "./RoomQRCode";
 import { buildPlayerUrl } from "../utils/roomUtils";
@@ -11,11 +11,55 @@ export interface RoomInfoModalProps {
 }
 
 export function RoomInfoModal({ roomState, open, onClose, className }: RoomInfoModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (open && dialogRef.current) {
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length > 0) {
+        focusable[0].focus();
+      }
+    }
+  }, [open]);
+
   if (!open) return null;
+
+  const headingId = `room-info-title-${roomState.roomId}`;
 
   return (
     <div
       onClick={onClose}
+      onKeyDown={handleKeyDown}
       style={{
         position: "fixed",
         inset: 0,
@@ -27,6 +71,10 @@ export function RoomInfoModal({ roomState, open, onClose, className }: RoomInfoM
       }}
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={headingId}
         className={className}
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -40,6 +88,7 @@ export function RoomInfoModal({ roomState, open, onClose, className }: RoomInfoM
         <button
           type="button"
           onClick={onClose}
+          aria-label="Close"
           style={{
             position: "absolute",
             top: 8,
@@ -54,7 +103,7 @@ export function RoomInfoModal({ roomState, open, onClose, className }: RoomInfoM
           ✕
         </button>
 
-        <h3 style={{ marginTop: 0, marginBottom: 16 }}>Room: {roomState.roomId}</h3>
+        <h3 id={headingId} style={{ marginTop: 0, marginBottom: 16 }}>Room: {roomState.roomId}</h3>
 
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <RoomQRCode roomId={roomState.roomId} size={160} />
@@ -67,6 +116,7 @@ export function RoomInfoModal({ roomState, open, onClose, className }: RoomInfoM
               <a
                 key={slot.id}
                 href={url}
+                aria-label={`Join link for Player ${slot.id}`}
                 style={{
                   display: "block",
                   padding: "10px 16px",

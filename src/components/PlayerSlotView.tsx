@@ -12,6 +12,7 @@ export function PlayerSlotView({ slot, onJoin, onReady, className }: PlayerSlotV
   return (
     <div
       className={className}
+      aria-label={`Player ${slot.id}`}
       style={{
         border: "1px solid #ccc",
         borderRadius: 8,
@@ -25,22 +26,22 @@ export function PlayerSlotView({ slot, onJoin, onReady, className }: PlayerSlotV
       </div>
 
       {slot.status === "empty" && (
-        <button type="button" onClick={onJoin} style={{ cursor: "pointer" }}>
+        <button type="button" onClick={onJoin} aria-label={`Join as Player ${slot.id}`} style={{ cursor: "pointer" }}>
           Join
         </button>
       )}
 
       {slot.status === "joining" && (
         <>
-          <div style={{ marginBottom: 4 }}>Joining...</div>
-          <button type="button" onClick={onReady} style={{ cursor: "pointer" }}>
+          <div role="status" aria-live="polite" style={{ marginBottom: 4 }}>Joining...</div>
+          <button type="button" onClick={onReady} aria-label={`Mark Player ${slot.id} as ready`} style={{ cursor: "pointer" }}>
             Ready
           </button>
         </>
       )}
 
       {slot.status === "ready" && (
-        <div style={{ color: "green", fontWeight: "bold" }}>Ready</div>
+        <div role="status" aria-live="polite" style={{ color: "green", fontWeight: "bold" }}>Ready</div>
       )}
     </div>
   );

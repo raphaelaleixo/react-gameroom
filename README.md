@@ -446,6 +446,20 @@ npm run dev -- --host
 
 The `--host` flag exposes the server on your local network so you can open the player URL on a phone. Open the landing page on your computer (the host), create a game, then scan the QR code with your phone to join as a player.
 
+## Accessibility
+
+All components include built-in accessibility support:
+
+- **`RoomInfoModal`** — uses `role="dialog"` with `aria-modal`, `aria-labelledby`, keyboard focus trap (Tab/Shift+Tab cycle within the modal), and Escape key to close. The close button has an accessible label.
+- **`RoomQRCode`** — the QR code SVG has `role="img"` and a descriptive `aria-label` so screen readers announce its purpose.
+- **`JoinGame`** — the room code input has a visible `<label>` and `aria-required`.
+- **`Lobby`** — the player-ready count uses `role="status"` with `aria-live="polite"` so screen readers announce changes.
+- **`PlayerScreen`** — status messages ("Game Started!", "You're joining...", "Ready!") use `aria-live="polite"` regions. Invalid slot errors use `role="alert"`.
+- **`PlayerSlotView`** — Join and Ready buttons have contextual `aria-label`s (e.g., "Join as Player 2"). Status text uses `aria-live="polite"`.
+- **`PlayerSlotsGrid`** — uses `role="list"` with `aria-label="Player slots"` and wraps each slot in a `role="listitem"`.
+
+Components use inline styles for layout but do not override focus outlines, so browser-default focus indicators remain visible. Since the library is headless in terms of theming (consumers apply styles via `className`), color contrast is ultimately the consumer's responsibility.
+
 ## License
 
 MIT

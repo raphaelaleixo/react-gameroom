@@ -19,7 +19,7 @@ export function PlayerScreen({
   const slot = roomState.players.find((p) => p.id === playerId);
 
   if (!slot) {
-    return <div className={className}>Invalid player slot</div>;
+    return <div className={className} role="alert">Invalid player slot</div>;
   }
 
   return (
@@ -28,7 +28,7 @@ export function PlayerScreen({
       <h3>Player {playerId}</h3>
 
       {roomState.status === "started" && (
-        <div style={{ fontSize: 20, color: "green" }}>Game Started!</div>
+        <div role="status" aria-live="polite" style={{ fontSize: 20, color: "green" }}>Game Started!</div>
       )}
 
       {roomState.status === "lobby" && (
@@ -41,7 +41,7 @@ export function PlayerScreen({
 
           {slot.status === "joining" && (
             <div>
-              <div style={{ marginBottom: 8 }}>You're joining...</div>
+              <div role="status" aria-live="polite" style={{ marginBottom: 8 }}>You're joining...</div>
               <button type="button" onClick={onReady} style={{ padding: "10px 24px", fontSize: 16 }}>
                 Ready Up
               </button>
@@ -49,7 +49,7 @@ export function PlayerScreen({
           )}
 
           {slot.status === "ready" && (
-            <div style={{ fontSize: 20, color: "green", fontWeight: "bold" }}>
+            <div role="status" aria-live="polite" style={{ fontSize: 20, color: "green", fontWeight: "bold" }}>
               Ready! Waiting for others...
             </div>
           )}

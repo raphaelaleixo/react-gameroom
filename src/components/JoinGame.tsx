@@ -23,11 +23,23 @@ export function JoinGame({ onJoin, className }: JoinGameProps) {
 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 12 }}>
+          <label
+            htmlFor="room-code"
+            style={{
+              display: "block",
+              marginBottom: 4,
+              fontSize: 14,
+            }}
+          >
+            Room code
+          </label>
           <input
+            id="room-code"
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             placeholder="Enter room code"
+            aria-required="true"
             maxLength={10}
             style={{
               padding: "10px 12px",

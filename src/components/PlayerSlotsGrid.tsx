@@ -13,6 +13,8 @@ export function PlayerSlotsGrid({ players, onJoin, onReady, className }: PlayerS
   return (
     <div
       className={className}
+      role="list"
+      aria-label="Player slots"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
@@ -20,12 +22,13 @@ export function PlayerSlotsGrid({ players, onJoin, onReady, className }: PlayerS
       }}
     >
       {players.map((slot) => (
-        <PlayerSlotView
-          key={slot.id}
-          slot={slot}
-          onJoin={onJoin ? () => onJoin(slot.id) : undefined}
-          onReady={onReady ? () => onReady(slot.id) : undefined}
-        />
+        <div key={slot.id} role="listitem">
+          <PlayerSlotView
+            slot={slot}
+            onJoin={onJoin ? () => onJoin(slot.id) : undefined}
+            onReady={onReady ? () => onReady(slot.id) : undefined}
+          />
+        </div>
       ))}
     </div>
   );

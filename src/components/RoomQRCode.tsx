@@ -13,8 +13,13 @@ export function RoomQRCode({ roomId, url, size = 128, className }: RoomQRCodePro
   const value = url ?? buildRoomUrl(roomId);
 
   return (
-    <div className={className} style={{ display: "inline-block" }}>
-      <QRCodeSVG value={value} size={size} />
+    <div
+      className={className}
+      role="img"
+      aria-label={`QR code to join room ${roomId}`}
+      style={{ display: "inline-block" }}
+    >
+      <QRCodeSVG value={value} size={size} title={`QR code to join room ${roomId}`} />
     </div>
   );
 }

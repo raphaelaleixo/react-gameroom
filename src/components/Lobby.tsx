@@ -23,7 +23,7 @@ export function Lobby({ roomState, onJoin, onReady, onStart, className }: LobbyP
         <RoomQRCode roomId={roomState.roomId} />
       </div>
 
-      <div style={{ marginBottom: 8, color: "#666" }}>
+      <div role="status" aria-live="polite" style={{ marginBottom: 8, color: "#666" }}>
         {readyCount} / {roomState.config.maxPlayers} players ready
         {!roomState.config.requireFull && ` (min ${roomState.config.minPlayers})`}
       </div>
