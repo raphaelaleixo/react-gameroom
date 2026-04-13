@@ -147,40 +147,33 @@ export function LobbyPage() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 24, textAlign: "center" }}>
-        {roomState.players.map((slot) => {
-          const url = buildPlayerUrl(roomState.roomId, slot.id);
-          return (
-            <div key={slot.id} style={{ marginBottom: 8, fontSize: 13 }}>
-              <span className="text-secondary">Player {slot.id}: </span>
-              <a href={url} style={{ wordBreak: "break-all" }}>{url}</a>
-            </div>
-          );
-        })}
-      </div>
-
       <div className="lobby-ready-count">
         {derived.readyCount} / {roomState.config.maxPlayers} players ready
       </div>
 
       <div className="lobby-grid">
-        {roomState.players.map((slot) => (
-          <div
-            key={slot.id}
-            className={`slot ${slot.status === "joining" ? "slot--joining" : ""} ${slot.status === "ready" ? "slot--ready" : ""}`}
-          >
-            <div className="slot-label">Player {slot.id}</div>
-            {slot.status === "empty" && (
-              <div className="text-secondary" style={{ fontSize: 14 }}>Waiting...</div>
-            )}
-            {slot.status === "joining" && (
-              <div className="text-accent" style={{ fontSize: 14 }}>Joining...</div>
-            )}
-            {slot.status === "ready" && (
-              <div className="slot-status-ready">Ready</div>
-            )}
-          </div>
-        ))}
+        {roomState.players.map((slot) => {
+          const isReady = slot.status === "ready";
+          const Tag = isReady ? "div" : "a";
+          return (
+            <Tag
+              key={slot.id}
+              {...(!isReady ? { href: buildPlayerUrl(roomState.roomId, slot.id) } : {})}
+              className={`slot slot--clickable ${slot.status === "joining" ? "slot--joining" : ""} ${isReady ? "slot--ready" : ""}`}
+            >
+              <div className="slot-label">Player {slot.id}</div>
+              {slot.status === "empty" && (
+                <div className="text-secondary" style={{ fontSize: 14 }}>Join</div>
+              )}
+              {slot.status === "joining" && (
+                <div className="text-accent" style={{ fontSize: 14 }}>Joining...</div>
+              )}
+              {slot.status === "ready" && (
+                <div className="slot-status-ready">Ready</div>
+              )}
+            </Tag>
+          );
+        })}
       </div>
 
       <button

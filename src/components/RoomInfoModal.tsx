@@ -60,14 +60,26 @@ export function RoomInfoModal({ roomState, open, onClose, className }: RoomInfoM
           <RoomQRCode roomId={roomState.roomId} size={160} />
         </div>
 
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {roomState.players.map((slot) => {
             const url = buildPlayerUrl(roomState.roomId, slot.id);
             return (
-              <div key={slot.id} style={{ marginBottom: 8, fontSize: 14 }}>
-                <div style={{ marginBottom: 2 }}>Player {slot.id}:</div>
-                <a href={url} style={{ wordBreak: "break-all" }}>{url}</a>
-              </div>
+              <a
+                key={slot.id}
+                href={url}
+                style={{
+                  display: "block",
+                  padding: "10px 16px",
+                  border: "1px solid #ccc",
+                  borderRadius: 8,
+                  textAlign: "center",
+                  textDecoration: "none",
+                  color: "inherit",
+                  fontSize: 14,
+                }}
+              >
+                Player {slot.id} — Join
+              </a>
             );
           })}
         </div>
