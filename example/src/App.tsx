@@ -1,0 +1,16 @@
+import { Routes, Route } from "react-router-dom";
+import { HomePage } from "./pages/HomePage";
+import { JoinGamePage } from "./pages/JoinGamePage";
+import { LobbyPage } from "./pages/LobbyPage";
+import { PlayerPage } from "./pages/PlayerPage";
+
+export function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/join" element={<JoinGamePage />} />
+      <Route path="/room/:roomId" element={<LobbyPage />} />
+      <Route path="/room/:roomId/player/:playerId" element={<PlayerPage />} />
+    </Routes>
+  );
+}
