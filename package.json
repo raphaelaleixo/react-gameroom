@@ -5,6 +5,14 @@
   "author": "Raphael Avellar",
   "license": "MIT",
   "keywords": ["react", "multiplayer", "lobby", "gameroom", "game", "qrcode", "room", "player"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raphaelaleixo/react-gameroom.git"
+  },
+  "homepage": "https://github.com/raphaelaleixo/react-gameroom#readme",
+  "bugs": {
+    "url": "https://github.com/raphaelaleixo/react-gameroom/issues"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
