@@ -135,6 +135,23 @@ lobby  →  started
 
 The room transitions from `lobby` to `started` when `startGame()` is called and the readiness conditions are met (minimum players ready, and all slots filled if `requireFull` is true).
 
+### Custom player data
+
+`PlayerSlot` is generic — you can attach game-specific data to each slot. The library carries it through state transitions but never reads it.
+
+```tsx
+type MyData = { role: "host" | "spy"; color: string };
+
+const room = createInitialRoom<MyData>({ minPlayers: 2, maxPlayers: 4, requireFull: false });
+const updated = joinPlayer(room, 1, "Alice", { role: "host", color: "#ff0000" });
+
+// Access in your components
+const slot = updated.players[0];
+slot.data?.role; // "host" — fully typed
+```
+
+`resetPlayer` clears both `name` and `data`. If you don't need custom data, just ignore the generic — it defaults to `unknown`.
+
 ## API Reference
 
 ### Types
@@ -143,10 +160,11 @@ The room transitions from `lobby` to `started` when `startGame()` is called and 
 type PlayerStatus = "empty" | "joining" | "ready";
 type RoomStatus = "lobby" | "started";
 
-interface PlayerSlot {
+interface PlayerSlot<T = unknown> {
   id: number;       // 1-based slot index
   status: PlayerStatus;
   name?: string;    // optional display name, set via joinPlayer/setPlayerJoining
+  data?: T;         // optional game-specific data (role, color, etc.)
 }
 
 interface RoomConfig {
@@ -155,10 +173,10 @@ interface RoomConfig {
   requireFull: boolean; // if true, all slots must be "ready" to start
 }
 
-interface RoomState {
+interface RoomState<T = unknown> {
   roomId: string;
   status: RoomStatus;
-  players: PlayerSlot[]; // always length === maxPlayers
+  players: PlayerSlot<T>[]; // always length === maxPlayers
   config: RoomConfig;
 }
 
@@ -179,9 +197,9 @@ Pure functions that return a new `RoomState`. They never mutate the input.
 | Function | Description |
 |----------|-------------|
 | `createInitialRoom(config)` | Creates a room with a generated ID and all slots empty |
-| `setPlayerJoining(state, playerId, name?)` | Transitions a slot from `empty` to `joining`, optionally setting a display name. No-op otherwise. |
+| `setPlayerJoining(state, playerId, name?, data?)` | Transitions a slot from `empty` to `joining`, optionally setting a name and custom data. No-op otherwise. |
 | `setPlayerReady(state, playerId)` | Transitions a slot from `joining` to `ready`. No-op otherwise. |
-| `joinPlayer(state, playerId, name?)` | Shorthand: `setPlayerJoining` + `setPlayerReady` in one call, optionally setting a name. |
+| `joinPlayer(state, playerId, name?, data?)` | Shorthand: `setPlayerJoining` + `setPlayerReady` in one call, optionally setting a name and custom data. |
 | `resetPlayer(state, playerId)` | Resets a slot back to `empty` and clears its name. No-op if already empty. |
 | `startGame(state)` | Transitions room to `started` if readiness conditions are met. |
 
