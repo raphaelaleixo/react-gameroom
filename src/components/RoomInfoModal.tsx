@@ -72,14 +72,15 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
       <div data-room-info-links="">
         {roomState.players.map((slot) => {
           const url = buildPlayerUrl(roomState.roomId, slot.id);
+          const label = slot.name || `Player ${slot.id}`;
           return (
             <a
               key={slot.id}
               href={url}
               className={linkClassName}
-              aria-label={`Join link for Player ${slot.id}`}
+              aria-label={`Join link for ${label}`}
             >
-              Player {slot.id} — Join
+              {label} — Join
             </a>
           );
         })}

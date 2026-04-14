@@ -17,18 +17,18 @@ export function PlayerSlotView({ slot, onJoin, onReady, href, className }: Playe
     <Tag
       className={className}
       data-status={slot.status}
-      aria-label={`Player ${slot.id}`}
+      aria-label={slot.name || `Player ${slot.id}`}
       {...(isLink ? { href } : {})}
     >
       <div>
-        Player {slot.id}
+        {slot.name || `Player ${slot.id}`}
       </div>
 
       {slot.status === "empty" && (
         href != null ? (
           <div>Join</div>
         ) : (
-          <button type="button" onClick={onJoin} aria-label={`Join as Player ${slot.id}`}>
+          <button type="button" onClick={onJoin} aria-label={`Join as ${slot.name || `Player ${slot.id}`}`}>
             Join
           </button>
         )
@@ -40,7 +40,7 @@ export function PlayerSlotView({ slot, onJoin, onReady, href, className }: Playe
         ) : (
           <>
             <div role="status" aria-live="polite">Joining...</div>
-            <button type="button" onClick={onReady} aria-label={`Mark Player ${slot.id} as ready`}>
+            <button type="button" onClick={onReady} aria-label={`Mark ${slot.name || `Player ${slot.id}`} as ready`}>
               Ready
             </button>
           </>

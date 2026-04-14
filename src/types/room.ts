@@ -5,6 +5,7 @@ export type RoomStatus = "lobby" | "started";
 export interface PlayerSlot {
   id: number; // 1-based
   status: PlayerStatus;
+  name?: string;
 }
 
 export interface RoomConfig {

@@ -22,7 +22,7 @@ import {
 const room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false });
 
 // 2. Transition players through the state machine: empty → joining → ready
-const updated = joinPlayer(room, 1); // Player 1 joins and is immediately ready
+const updated = joinPlayer(room, 1, "Alice"); // Player 1 joins with a name and is immediately ready
 
 // 3. Start the game when conditions are met
 const started = startGame(updated);
@@ -39,6 +39,73 @@ const { canStart, readyCount } = useRoomState(room);
   Start Game ({readyCount} ready)
 </button>
 ```
+
+## How to Use
+
+The library handles the lobby — you handle the game. A typical integration follows this pattern:
+
+### 1. Create a room
+
+Call `createInitialRoom` with your player config, persist the result to your backend, and navigate to the lobby.
+
+```tsx
+import { createInitialRoom } from "react-gameroom";
+
+const room = createInitialRoom({ minPlayers: 2, maxPlayers: 8, requireFull: false });
+await saveToBackend(room); // Firebase, Supabase, your own server, etc.
+navigate(`/room/${room.roomId}`);
+```
+
+### 2. Build the lobby screen
+
+Compose `PlayerSlotsGrid`, `RoomQRCode`, and `useRoomState` into your lobby page. Players join by scanning the QR code or entering the room code.
+
+```tsx
+import { useRoomState, PlayerSlotsGrid, RoomQRCode, startGame, buildPlayerUrl } from "react-gameroom";
+
+const { canStart, readyCount } = useRoomState(roomState);
+
+<RoomQRCode roomId={roomState.roomId} />
+<PlayerSlotsGrid
+  players={roomState.players}
+  buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id)}
+/>
+<button onClick={() => updateRoom(startGame(roomState))} disabled={!canStart}>
+  Start ({readyCount} ready)
+</button>
+```
+
+### 3. Build the player screen
+
+Use `PlayerScreen` with render props to define what players see at each phase. The `renderEmpty` callback is where players enter their name and join; `renderStarted` is where your game UI goes.
+
+```tsx
+import { PlayerScreen, joinPlayer } from "react-gameroom";
+
+<PlayerScreen
+  roomState={roomState}
+  playerId={playerId}
+  renderEmpty={() => <YourJoinForm onJoin={(name) => updateRoom(joinPlayer(roomState, playerId, name))} />}
+  renderReady={() => <p>Waiting for others...</p>}
+  renderStarted={() => <YourGameUI />}
+/>
+```
+
+### 4. Add your game logic
+
+Once `roomState.status` is `"started"`, the library's job is done. Your game-specific state (moves, scores, rounds) lives alongside `RoomState` in whatever backend you're using. The library doesn't know or care about your game rules.
+
+```
+your-backend/
+  rooms/{roomId}/
+    state/          ← managed by react-gameroom
+    playerNames/    ← your game data
+    game/           ← your game data
+```
+
+### 5. Optionally, let players rejoin
+
+Use `JoinGame` for a room code entry form, and `RoomInfoModal` to show room info and QR codes during gameplay.
 
 ## Core Concepts
 
@@ -79,6 +146,7 @@ type RoomStatus = "lobby" | "started";
 interface PlayerSlot {
   id: number;       // 1-based slot index
   status: PlayerStatus;
+  name?: string;    // optional display name, set via joinPlayer/setPlayerJoining
 }
 
 interface RoomConfig {
@@ -100,6 +168,7 @@ interface RoomDerivedState {
   readyCount: number;
   emptyCount: number;
   canStart: boolean;
+  playerNames: Record<number, string>; // { 1: "Alice", 2: "Bob" } — only named players
 }
 ```
 
@@ -110,10 +179,10 @@ Pure functions that return a new `RoomState`. They never mutate the input.
 | Function | Description |
 |----------|-------------|
 | `createInitialRoom(config)` | Creates a room with a generated ID and all slots empty |
-| `setPlayerJoining(state, playerId)` | Transitions a slot from `empty` to `joining`. No-op otherwise. |
+| `setPlayerJoining(state, playerId, name?)` | Transitions a slot from `empty` to `joining`, optionally setting a display name. No-op otherwise. |
 | `setPlayerReady(state, playerId)` | Transitions a slot from `joining` to `ready`. No-op otherwise. |
-| `joinPlayer(state, playerId)` | Shorthand: `setPlayerReady(setPlayerJoining(state, id), id)` |
-| `resetPlayer(state, playerId)` | Resets a slot back to `empty`. No-op if already empty. |
+| `joinPlayer(state, playerId, name?)` | Shorthand: `setPlayerJoining` + `setPlayerReady` in one call, optionally setting a name. |
+| `resetPlayer(state, playerId)` | Resets a slot back to `empty` and clears its name. No-op if already empty. |
 | `startGame(state)` | Transitions room to `started` if readiness conditions are met. |
 
 ### Hook
@@ -416,7 +485,7 @@ Each player sees a page at `/room/:roomId/player/:playerId`. The page uses the `
 />
 ```
 
-- `renderEmpty` shows a name input form. When the player submits their name, `handleNameSaved` calls `joinPlayer` — a shorthand that chains `setPlayerJoining` and `setPlayerReady` into a single transition. The name is stored separately in Firebase at `rooms/{roomId}/playerNames/{playerId}` (game-specific data outside `react-gameroom`'s `RoomState`).
+- `renderEmpty` shows a name input form. When the player submits their name, `handleNameSaved` calls `joinPlayer(roomState, playerId, name)` — a shorthand that chains `setPlayerJoining` and `setPlayerReady` into a single transition, attaching the name to the `PlayerSlot`.
 - `renderReady` shows a waiting message with the player's name.
 - `renderStarted` switches to the game UI once the host presses "Start Game".
 
@@ -456,12 +525,9 @@ rooms/
       roomId
       status
       players/
-        0: { id: 1, status: "ready" }
-        1: { id: 2, status: "ready" }
+        0: { id: 1, status: "ready", name: "Alice" }
+        1: { id: 2, status: "ready", name: "Bob" }
       config: { minPlayers: 2, maxPlayers: 2, requireFull: true }
-    playerNames/      # Game-specific: player display names
-      1: "Alice"
-      2: "Bob"
     game/             # Game-specific: RPS choices and result
       choices/
         1: "rock"
@@ -469,7 +535,7 @@ rooms/
       result: { winner: 2, p1Choice: "rock", p2Choice: "paper" }
 ```
 
-The `state/` subtree is the only part managed by `react-gameroom`. Everything under `playerNames/` and `game/` is application-specific data that the example manages directly with Firebase.
+The `state/` subtree is the only part managed by `react-gameroom` — including player names, which are stored directly on `PlayerSlot`. Everything under `game/` is application-specific data that the example manages directly with Firebase.
 
 ### Running the example
 

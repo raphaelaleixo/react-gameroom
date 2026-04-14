@@ -42,7 +42,6 @@ export function LobbyPage() {
     p1Choice: string;
     p2Choice: string;
   } | null>(null);
-  const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
@@ -58,15 +57,9 @@ export function LobbyPage() {
       setGameResult(snapshot.val());
     });
 
-    const namesRef = ref(db, `rooms/${roomId}/playerNames`);
-    const unsub3 = onValue(namesRef, (snapshot) => {
-      setPlayerNames(snapshot.val() || {});
-    });
-
     return () => {
       unsub1();
       unsub2();
-      unsub3();
     };
   }, [roomId]);
 
@@ -81,7 +74,7 @@ export function LobbyPage() {
     }
   }, [choices, roomId, gameResult]);
 
-  const { canStart, readyCount } = useRoomState(roomState ?? {
+  const { canStart, readyCount, playerNames } = useRoomState(roomState ?? {
     roomId: "", status: "lobby", players: [], config: { minPlayers: 0, maxPlayers: 0, requireFull: false },
   });
 

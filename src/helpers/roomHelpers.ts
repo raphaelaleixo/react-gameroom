@@ -21,14 +21,14 @@ export function createInitialRoom(config: RoomConfig): RoomState {
   };
 }
 
-export function setPlayerJoining(state: RoomState, playerId: number): RoomState {
+export function setPlayerJoining(state: RoomState, playerId: number, name?: string): RoomState {
   const slot = state.players.find((p) => p.id === playerId);
   if (!slot || slot.status !== "empty") return state;
 
   return {
     ...state,
     players: state.players.map((p) =>
-      p.id === playerId ? { ...p, status: "joining" } : p
+      p.id === playerId ? { ...p, status: "joining" as const, ...(name !== undefined ? { name } : {}) } : p
     ),
   };
 }
@@ -45,8 +45,8 @@ export function setPlayerReady(state: RoomState, playerId: number): RoomState {
   };
 }
 
-export function joinPlayer(state: RoomState, playerId: number): RoomState {
-  return setPlayerReady(setPlayerJoining(state, playerId), playerId);
+export function joinPlayer(state: RoomState, playerId: number, name?: string): RoomState {
+  return setPlayerReady(setPlayerJoining(state, playerId, name), playerId);
 }
 
 export function resetPlayer(state: RoomState, playerId: number): RoomState {
@@ -56,7 +56,7 @@ export function resetPlayer(state: RoomState, playerId: number): RoomState {
   return {
     ...state,
     players: state.players.map((p) =>
-      p.id === playerId ? { ...p, status: "empty" } : p
+      p.id === playerId ? { id: p.id, status: "empty" as const } : p
     ),
   };
 }

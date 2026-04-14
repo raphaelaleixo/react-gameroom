@@ -34,7 +34,7 @@ export function PlayerScreen({
         {renderStarted ? renderStarted() : (
           <>
             <h2>Room: {roomState.roomId}</h2>
-            <h3>Player {playerId}</h3>
+            <h3>{slot.name || `Player ${playerId}`}</h3>
             <div role="status" aria-live="polite">Game Started!</div>
           </>
         )}

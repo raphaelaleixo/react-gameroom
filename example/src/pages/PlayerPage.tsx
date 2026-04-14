@@ -22,7 +22,6 @@ export function PlayerPage() {
     p1Choice: string;
     p2Choice: string;
   } | null>(null);
-  const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
@@ -39,24 +38,25 @@ export function PlayerPage() {
       setGameResult(snapshot.val());
     });
 
-    const namesRef = ref(db, `rooms/${roomId}/playerNames`);
-    const unsub3 = onValue(namesRef, (snapshot) => {
-      setPlayerNames(snapshot.val() || {});
-    });
-
     return () => {
       unsub1();
       unsub2();
-      unsub3();
     };
   }, [roomId, playerId]);
 
   if (loading) return <div className="page"><div className="text-secondary">Loading...</div></div>;
   if (error || !roomState) return <div className="page"><div className="text-error">Room not found.</div></div>;
 
-  async function handleNameSaved() {
+  const slot = roomState.players.find((p) => p.id === playerId);
+  const myName = slot?.name || `Player ${playerId}`;
+  const playerNames: Record<number, string> = {};
+  for (const p of roomState.players) {
+    if (p.name) playerNames[p.id] = p.name;
+  }
+
+  async function handleNameSaved(name: string) {
     if (!roomState) return;
-    await updateRoom(joinPlayer(roomState, playerId));
+    await updateRoom(joinPlayer(roomState, playerId, name));
   }
 
   async function handlePick(choice: "rock" | "paper" | "scissors") {
@@ -83,7 +83,7 @@ export function PlayerPage() {
 
           <h2 className="title" style={{ fontSize: 24, marginBottom: 8 }}>Rock Paper Scissors</h2>
           <div className="player-header">
-            {playerNames[playerId] || `Player ${playerId}`}
+            {myName}
           </div>
 
           {!myChoice && (
@@ -105,14 +105,14 @@ export function PlayerPage() {
       renderEmpty={() => (
         <>
           <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
-          <NameInput roomId={roomId!} playerId={playerId} onNameSaved={handleNameSaved} />
+          <NameInput onNameSaved={handleNameSaved} />
         </>
       )}
       renderReady={() => (
         <>
           <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
           <div className="text-secondary" style={{ marginBottom: 12 }}>
-            Playing as: <span className="text-accent">{playerNames[playerId] || `Player ${playerId}`}</span>
+            Playing as: <span className="text-accent">{myName}</span>
           </div>
           <div className="slot-status-ready" style={{ fontSize: 24 }}>
             Ready!

@@ -7,6 +7,7 @@ export interface RoomDerivedState {
   readyCount: number;
   emptyCount: number;
   canStart: boolean;
+  playerNames: Record<number, string>;
 }
 
 export function useRoomState(roomState: RoomState): RoomDerivedState {
@@ -22,6 +23,11 @@ export function useRoomState(roomState: RoomState): RoomDerivedState {
       : true;
     const canStart = isLobby && meetsMin && meetsFull;
 
-    return { isLobby, isStarted, readyCount, emptyCount, canStart };
+    const playerNames: Record<number, string> = {};
+    for (const p of roomState.players) {
+      if (p.name) playerNames[p.id] = p.name;
+    }
+
+    return { isLobby, isStarted, readyCount, emptyCount, canStart, playerNames };
   }, [roomState]);
 }
