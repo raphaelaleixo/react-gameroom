@@ -13,6 +13,7 @@ export {
   setPlayerJoining,
   setPlayerReady,
   joinPlayer,
+  findFirstEmptySlot,
   resetPlayer,
   startGame,
 } from "./helpers/roomHelpers";
@@ -46,5 +47,6 @@ export {
   generateRoomId,
   buildRoomUrl,
   buildPlayerUrl,
+  buildJoinUrl,
   parseRoomFromUrl,
 } from "./utils/roomUtils";

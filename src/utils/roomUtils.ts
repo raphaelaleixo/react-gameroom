@@ -43,6 +43,18 @@ export function buildPlayerUrl(roomId: string, playerId: number, basePath: strin
 }
 
 /**
+ * Builds a URL for the generic player join page (no specific slot).
+ * Used for first-come-first-served lobbies where players are auto-assigned seats.
+ * @param roomId - The room identifier.
+ * @param basePath - Optional path prefix (e.g., "/app").
+ * @returns URL in the form `{origin}{basePath}/room/{roomId}/player`.
+ */
+export function buildJoinUrl(roomId: string, basePath: string = ""): string {
+  const prefix = typeof window !== "undefined" ? window.location.origin + basePath : basePath;
+  return `${prefix}/room/${roomId}/player`;
+}
+
+/**
  * Parses a URL to extract room and optional player IDs.
  * Recognizes `/room/{roomId}` and `/room/{roomId}/player/{playerId}` patterns.
  * @param url - The URL to parse (absolute or relative).
@@ -50,7 +62,7 @@ export function buildPlayerUrl(roomId: string, playerId: number, basePath: strin
  */
 export function parseRoomFromUrl(
   url: string
-): { roomId: string; playerId?: number } | null {
+): { roomId: string; playerId?: number; isJoin?: boolean } | null {
   try {
     const parsed = new URL(url, "http://localhost");
     const segments = parsed.pathname.split("/").filter(Boolean);
@@ -62,11 +74,15 @@ export function parseRoomFromUrl(
     if (!roomId) return null;
 
     const playerIndex = segments.indexOf("player");
-    if (playerIndex !== -1 && playerIndex + 1 < segments.length) {
-      const playerId = parseInt(segments[playerIndex + 1], 10);
-      if (!isNaN(playerId) && playerId > 0) {
-        return { roomId, playerId };
+    if (playerIndex !== -1) {
+      if (playerIndex + 1 < segments.length) {
+        const playerId = parseInt(segments[playerIndex + 1], 10);
+        if (!isNaN(playerId) && playerId > 0) {
+          return { roomId, playerId };
+        }
       }
+      // /room/{id}/player with no trailing number → join URL
+      return { roomId, isJoin: true };
     }
 
     return { roomId };

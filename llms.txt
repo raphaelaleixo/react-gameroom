@@ -63,6 +63,10 @@ joinPlayer(state, playerId, name?, data?): RoomState
 resetPlayer(state, playerId): RoomState
   Resets slot to "empty", clearing name and data. No-op if already empty.
 
+findFirstEmptySlot(players: PlayerSlot[]): PlayerSlot | null
+  Returns the first slot with "empty" status, or null if all slots are taken.
+  Useful for first-come-first-served lobbies where players are auto-assigned seats.
+
 startGame(state): RoomState
   Transitions room from "lobby" → "started" if:
   - readyCount >= config.minPlayers
@@ -86,8 +90,13 @@ buildRoomUrl(roomId, basePath?): string
 buildPlayerUrl(roomId, playerId, basePath?): string
   Returns URL: {origin}{basePath}/room/{roomId}/player/{playerId}
 
-parseRoomFromUrl(url): { roomId: string; playerId?: number } | null
-  Parses /room/{id} and /room/{id}/player/{n} patterns from a URL.
+buildJoinUrl(roomId, basePath?): string
+  Returns URL: {origin}{basePath}/room/{roomId}/player (no slot number).
+  Used for first-come-first-served lobbies.
+
+parseRoomFromUrl(url): { roomId: string; playerId?: number; isJoin?: boolean } | null
+  Parses /room/{id}, /room/{id}/player/{n}, and /room/{id}/player patterns.
+  Returns isJoin: true for the generic player join URL (no slot number).
 
 ## Example
 

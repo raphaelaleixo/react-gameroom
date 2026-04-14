@@ -80,6 +80,10 @@ interface RoomDerivedState {
             <td>Resets a slot back to <code>empty</code> and clears its name and data. No-op if already empty.</td>
           </tr>
           <tr>
+            <td><code>findFirstEmptySlot(players)</code></td>
+            <td>Returns the first slot with <code>empty</code> status, or <code>null</code> if all slots are taken. Useful for first-come-first-served lobbies.</td>
+          </tr>
+          <tr>
             <td><code>startGame(state)</code></td>
             <td>Transitions room to <code>started</code> if readiness conditions are met.</td>
           </tr>
@@ -209,8 +213,12 @@ interface RoomDerivedState {
             <td>Returns a full URL for <code>/room/{"{roomId}"}/player/{"{playerId}"}</code></td>
           </tr>
           <tr>
+            <td><code>buildJoinUrl(roomId, basePath?)</code></td>
+            <td>Returns a URL for <code>/room/{"{roomId}"}/player</code> (no slot number). Used for first-come-first-served lobbies.</td>
+          </tr>
+          <tr>
             <td><code>parseRoomFromUrl(url)</code></td>
-            <td>Parses a URL and returns <code>{"{ roomId, playerId? }"}</code> or <code>null</code></td>
+            <td>Parses a URL and returns <code>{"{ roomId, playerId?, isJoin? }"}</code> or <code>null</code>. Returns <code>isJoin: true</code> for <code>/room/{"{roomId}"}/player</code> (no slot number).</td>
           </tr>
         </tbody>
       </table>
