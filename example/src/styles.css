@@ -173,7 +173,7 @@ a {
   display: inline-block;
 }
 
-/* ---- Player slots (overrides library inline styles) ---- */
+/* ---- Player slots ---- */
 
 .slot {
   background: var(--bg-surface);
@@ -182,45 +182,36 @@ a {
   padding: 20px;
   text-align: center;
   min-width: 140px;
+  cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-.slot--clickable {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.slot--clickable:hover:not(.slot--ready) {
+.slot:hover:not([data-status="ready"]) {
   border-color: var(--accent);
   box-shadow: 0 0 12px var(--accent-glow);
   transform: translateY(-2px);
 }
 
-.slot--clickable:active:not(.slot--ready) {
+.slot:active:not([data-status="ready"]) {
   transform: translateY(0);
   box-shadow: 0 0 6px var(--accent-glow);
   background: rgba(233, 69, 96, 0.08);
 }
 
-.slot--clickable.slot--ready {
-  cursor: default;
-  opacity: 0.7;
-}
-
-.slot--joining {
+.slot[data-status="joining"] {
   border-style: solid;
   border-color: var(--accent);
   box-shadow: 0 0 12px var(--accent-glow);
 }
 
-.slot--ready {
+.slot[data-status="ready"] {
   border-style: solid;
   border-color: var(--accent);
+  cursor: default;
+  opacity: 0.7;
 }
 
-.slot-label {
+.slot > div:first-child {
   font-size: 13px;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -228,12 +219,31 @@ a {
   margin-bottom: 8px;
 }
 
-.slot-status-ready {
+.slot[data-status="ready"] > [role="status"] {
   color: var(--accent);
   font-weight: 700;
   font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 2px;
+}
+
+.slot[data-status="joining"] > [role="status"] {
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.slot button {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.slot button:hover {
+  background: rgba(233, 69, 96, 0.15);
 }
 
 /* ---- Lobby layout ---- */
@@ -254,6 +264,21 @@ a {
   color: var(--text-secondary);
   font-size: 16px;
   margin-bottom: 16px;
+}
+
+/* ---- Lobby inner (hides Lobby built-ins, themed wrapper provides its own) ---- */
+
+.lobby-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lobby-inner > h2,
+.lobby-inner > div:has(svg),
+.lobby-inner > [role="status"] {
+  display: none;
 }
 
 /* ---- Versus screen (game started, host view) ---- */

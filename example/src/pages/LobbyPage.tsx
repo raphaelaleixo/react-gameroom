@@ -4,7 +4,7 @@ import { ref, onValue, set } from "firebase/database";
 import {
   setPlayerReady,
   startGame,
-  useRoomState,
+  Lobby,
   RoomQRCode,
   RoomInfoModal,
   buildPlayerUrl,
@@ -43,10 +43,6 @@ export function LobbyPage() {
   } | null>(null);
   const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
   const [showInfo, setShowInfo] = useState(false);
-
-  const derived = useRoomState(roomState ?? {
-    roomId: "", status: "lobby", players: [], config: { minPlayers: 0, maxPlayers: 0, requireFull: false },
-  });
 
   useEffect(() => {
     if (!roomId) return;
@@ -147,44 +143,18 @@ export function LobbyPage() {
         </div>
       </div>
 
-      <div className="lobby-ready-count">
-        {derived.readyCount} / {roomState.config.maxPlayers} players ready
-      </div>
-
-      <div className="lobby-grid">
-        {roomState.players.map((slot) => {
-          const isReady = slot.status === "ready";
-          const Tag = isReady ? "div" : "a";
-          return (
-            <Tag
-              key={slot.id}
-              {...(!isReady ? { href: buildPlayerUrl(roomState.roomId, slot.id) } : {})}
-              className={`slot slot--clickable ${slot.status === "joining" ? "slot--joining" : ""} ${isReady ? "slot--ready" : ""}`}
-            >
-              <div className="slot-label">Player {slot.id}</div>
-              {slot.status === "empty" && (
-                <div className="text-secondary" style={{ fontSize: 14 }}>Join</div>
-              )}
-              {slot.status === "joining" && (
-                <div className="text-accent" style={{ fontSize: 14 }}>Joining...</div>
-              )}
-              {slot.status === "ready" && (
-                <div className="slot-status-ready">Ready</div>
-              )}
-            </Tag>
-          );
-        })}
-      </div>
-
-      <button
-        type="button"
-        className="btn"
-        onClick={() => updateRoom(startGame(roomState))}
-        disabled={!derived.canStart}
-        style={{ marginTop: 16 }}
-      >
-        Start Game
-      </button>
+      <Lobby
+        roomState={roomState}
+        className="lobby-inner"
+        gridClassName="lobby-grid"
+        slotClassName="slot"
+        buttonClassName="btn"
+        onJoin={(playerId) => {
+          window.location.href = buildPlayerUrl(roomState.roomId, playerId);
+        }}
+        onReady={(playerId) => updateRoom(setPlayerReady(roomState, playerId))}
+        onStart={() => updateRoom(startGame(roomState))}
+      />
     </div>
   );
 }
