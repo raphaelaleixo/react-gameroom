@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import type { RoomState } from "../types/room";
 import { RoomQRCode } from "./RoomQRCode";
-import { buildPlayerUrl } from "../utils/roomUtils";
+import { buildPlayerUrl, buildJoinUrl, buildRejoinUrl } from "../utils/roomUtils";
 
 /**
  * Customizable labels for RoomInfoModal text.
@@ -12,10 +12,14 @@ export interface RoomInfoModalLabels {
   close?: string;
   /** Heading prefix before roomId (default: "Room:"). */
   roomHeading?: string;
-  /** Suffix after player name in links (default: "Join"). */
+  /** Suffix after player name in lobby links (default: "Join"). */
   joinLink?: string;
-  /** Aria-label prefix for player links (default: "Join link for"). */
+  /** Aria-label prefix for lobby player links (default: "Join link for"). */
   joinLinkAria?: string;
+  /** Suffix after player name in started links (default: "Rejoin"). */
+  rejoinLink?: string;
+  /** Aria-label prefix for started player links (default: "Rejoin link for"). */
+  rejoinLinkAria?: string;
 }
 
 const defaultLabels: Required<RoomInfoModalLabels> = {
@@ -23,6 +27,8 @@ const defaultLabels: Required<RoomInfoModalLabels> = {
   roomHeading: "Room:",
   joinLink: "Join",
   joinLinkAria: "Join link for",
+  rejoinLink: "Rejoin",
+  rejoinLinkAria: "Rejoin link for",
 };
 
 export interface RoomInfoModalProps {
@@ -32,12 +38,15 @@ export interface RoomInfoModalProps {
   className?: string;
   closeButtonClassName?: string;
   linkClassName?: string;
+  /** Optional base path for URL generation (e.g., "/app"). */
+  basePath?: string;
   /** Custom labels for modal text. */
   labels?: RoomInfoModalLabels;
 }
 
-export function RoomInfoModal({ roomState, open, onClose, className, closeButtonClassName, linkClassName, labels: labelsProp }: RoomInfoModalProps) {
+export function RoomInfoModal({ roomState, open, onClose, className, closeButtonClassName, linkClassName, basePath, labels: labelsProp }: RoomInfoModalProps) {
   const labels = { ...defaultLabels, ...labelsProp };
+  const isStarted = roomState.status === "started";
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -70,6 +79,11 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
   }
 
   const headingId = `room-info-title-${roomState.roomId}`;
+  const qrUrl = isStarted
+    ? buildRejoinUrl(roomState.roomId, basePath)
+    : buildJoinUrl(roomState.roomId, basePath);
+  const linkLabel = isStarted ? labels.rejoinLink : labels.joinLink;
+  const linkAria = isStarted ? labels.rejoinLinkAria : labels.joinLinkAria;
 
   return (
     <dialog
@@ -91,21 +105,21 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
       <h3 id={headingId}>{labels.roomHeading} {roomState.roomId}</h3>
 
       <div data-room-info-qr="">
-        <RoomQRCode roomId={roomState.roomId} size={160} />
+        <RoomQRCode roomId={roomState.roomId} url={qrUrl} size={160} />
       </div>
 
       <div data-room-info-links="">
         {roomState.players.map((slot) => {
-          const url = buildPlayerUrl(roomState.roomId, slot.id);
+          const url = buildPlayerUrl(roomState.roomId, slot.id, basePath);
           const label = slot.name || `Player ${slot.id}`;
           return (
             <a
               key={slot.id}
               href={url}
               className={linkClassName}
-              aria-label={`${labels.joinLinkAria} ${label}`}
+              aria-label={`${linkAria} ${label}`}
             >
-              {label} — {labels.joinLink}
+              {label} — {linkLabel}
             </a>
           );
         })}

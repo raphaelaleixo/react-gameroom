@@ -94,9 +94,13 @@ buildJoinUrl(roomId, basePath?): string
   Returns URL: {origin}{basePath}/room/{roomId}/player (no slot number).
   Used for first-come-first-served lobbies.
 
-parseRoomFromUrl(url): { roomId: string; playerId?: number; isJoin?: boolean } | null
-  Parses /room/{id}, /room/{id}/player/{n}, and /room/{id}/player patterns.
-  Returns isJoin: true for the generic player join URL (no slot number).
+buildRejoinUrl(roomId, basePath?): string
+  Returns URL: {origin}{basePath}/room/{roomId}/players.
+  Used for the player rejoin grid when the game is already started.
+
+parseRoomFromUrl(url): { roomId: string; playerId?: number; isJoin?: boolean; isRejoin?: boolean } | null
+  Parses /room/{id}, /room/{id}/player/{n}, /room/{id}/player, and /room/{id}/players.
+  Returns isJoin: true for join URL, isRejoin: true for rejoin grid URL.
 
 ## Example
 
@@ -124,3 +128,8 @@ an optional `labels` prop to customize all hardcoded UI strings (button text, st
 labels, headings). This enables i18n and alternative lobby flows (e.g., view-only
 slots in first-come-first-served mode show "Empty" instead of a "Join" button when
 no onJoin/href is provided).
+
+RoomInfoModal is status-aware: during lobby, QR code points to buildJoinUrl and
+links say "Join". When game is started, QR points to buildRejoinUrl and links say
+"Rejoin". Pass basePath prop to set URL prefix. Labels are customizable via
+rejoinLink/rejoinLinkAria.

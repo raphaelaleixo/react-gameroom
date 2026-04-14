@@ -48,5 +48,6 @@ export {
   buildRoomUrl,
   buildPlayerUrl,
   buildJoinUrl,
+  buildRejoinUrl,
   parseRoomFromUrl,
 } from "./utils/roomUtils";

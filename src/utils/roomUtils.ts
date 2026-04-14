@@ -55,14 +55,26 @@ export function buildJoinUrl(roomId: string, basePath: string = ""): string {
 }
 
 /**
+ * Builds a URL for the player rejoin grid (shown when game is started).
+ * @param roomId - The room identifier.
+ * @param basePath - Optional path prefix (e.g., "/app").
+ * @returns URL in the form `{origin}{basePath}/room/{roomId}/players`.
+ */
+export function buildRejoinUrl(roomId: string, basePath: string = ""): string {
+  const prefix = typeof window !== "undefined" ? window.location.origin + basePath : basePath;
+  return `${prefix}/room/${roomId}/players`;
+}
+
+/**
  * Parses a URL to extract room and optional player IDs.
- * Recognizes `/room/{roomId}` and `/room/{roomId}/player/{playerId}` patterns.
+ * Recognizes `/room/{roomId}`, `/room/{roomId}/player/{playerId}`,
+ * `/room/{roomId}/player` (join), and `/room/{roomId}/players` (rejoin) patterns.
  * @param url - The URL to parse (absolute or relative).
- * @returns An object with `roomId` and optional `playerId`, or `null` if the URL doesn't match.
+ * @returns An object with `roomId` and optional `playerId`, `isJoin`, or `isRejoin`, or `null` if the URL doesn't match.
  */
 export function parseRoomFromUrl(
   url: string
-): { roomId: string; playerId?: number; isJoin?: boolean } | null {
+): { roomId: string; playerId?: number; isJoin?: boolean; isRejoin?: boolean } | null {
   try {
     const parsed = new URL(url, "http://localhost");
     const segments = parsed.pathname.split("/").filter(Boolean);
@@ -72,6 +84,12 @@ export function parseRoomFromUrl(
 
     const roomId = segments[roomIndex + 1];
     if (!roomId) return null;
+
+    // /room/{id}/players → rejoin grid
+    const playersIndex = segments.indexOf("players");
+    if (playersIndex !== -1) {
+      return { roomId, isRejoin: true };
+    }
 
     const playerIndex = segments.indexOf("player");
     if (playerIndex !== -1) {

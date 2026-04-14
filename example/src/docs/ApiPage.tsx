@@ -193,8 +193,10 @@ interface RoomDerivedState {
       <h3>{"<RoomInfoModal>"}</h3>
       <p>
         A <code>&lt;dialog&gt;</code>-based modal that displays the room code, QR code, and player
-        join URLs. Uses the native <code>showModal()</code> API for built-in backdrop, focus trapping,
-        and Escape to close.
+        links. Uses the native <code>showModal()</code> API for built-in backdrop, focus trapping,
+        and Escape to close. Status-aware: during lobby, QR code points to the join URL and links
+        say "Join". When the game is started, QR points to the rejoin grid URL and links say "Rejoin".
+        Pass <code>basePath</code> to set URL prefix.
       </p>
       <CodeBlock language="tsx">{`const [showInfo, setShowInfo] = useState(false);
 
@@ -239,8 +241,12 @@ interface RoomDerivedState {
             <td>Returns a URL for <code>/room/{"{roomId}"}/player</code> (no slot number). Used for first-come-first-served lobbies.</td>
           </tr>
           <tr>
+            <td><code>buildRejoinUrl(roomId, basePath?)</code></td>
+            <td>Returns a URL for <code>/room/{"{roomId}"}/players</code>. Used for the player rejoin grid when the game is started.</td>
+          </tr>
+          <tr>
             <td><code>parseRoomFromUrl(url)</code></td>
-            <td>Parses a URL and returns <code>{"{ roomId, playerId?, isJoin? }"}</code> or <code>null</code>. Returns <code>isJoin: true</code> for <code>/room/{"{roomId}"}/player</code> (no slot number).</td>
+            <td>Parses a URL and returns <code>{"{ roomId, playerId?, isJoin?, isRejoin? }"}</code> or <code>null</code>. Returns <code>isJoin: true</code> for <code>/room/{"{roomId}"}/player</code>, <code>isRejoin: true</code> for <code>/room/{"{roomId}"}/players</code>.</td>
           </tr>
         </tbody>
       </table>
