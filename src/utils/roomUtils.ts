@@ -1,5 +1,11 @@
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+/**
+ * Generates a random alphanumeric room code.
+ * Uses `crypto.getRandomValues` when available, falls back to `Math.random`.
+ * @param length - Length of the generated code (default: 5).
+ * @returns An uppercase alphanumeric string.
+ */
 export function generateRoomId(length: number = 5): string {
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     const arr = new Uint8Array(length);
@@ -13,16 +19,35 @@ export function generateRoomId(length: number = 5): string {
   return result;
 }
 
+/**
+ * Builds a full URL for a room. Prepends `window.location.origin` in browser environments.
+ * @param roomId - The room identifier.
+ * @param basePath - Optional path prefix (e.g., "/app").
+ * @returns URL in the form `{origin}{basePath}/room/{roomId}`.
+ */
 export function buildRoomUrl(roomId: string, basePath: string = ""): string {
   const prefix = typeof window !== "undefined" ? window.location.origin + basePath : basePath;
   return `${prefix}/room/${roomId}`;
 }
 
+/**
+ * Builds a full URL for a specific player slot. Prepends `window.location.origin` in browser environments.
+ * @param roomId - The room identifier.
+ * @param playerId - 1-based player slot ID.
+ * @param basePath - Optional path prefix (e.g., "/app").
+ * @returns URL in the form `{origin}{basePath}/room/{roomId}/player/{playerId}`.
+ */
 export function buildPlayerUrl(roomId: string, playerId: number, basePath: string = ""): string {
   const prefix = typeof window !== "undefined" ? window.location.origin + basePath : basePath;
   return `${prefix}/room/${roomId}/player/${playerId}`;
 }
 
+/**
+ * Parses a URL to extract room and optional player IDs.
+ * Recognizes `/room/{roomId}` and `/room/{roomId}/player/{playerId}` patterns.
+ * @param url - The URL to parse (absolute or relative).
+ * @returns An object with `roomId` and optional `playerId`, or `null` if the URL doesn't match.
+ */
 export function parseRoomFromUrl(
   url: string
 ): { roomId: string; playerId?: number } | null {
