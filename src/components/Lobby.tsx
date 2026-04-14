@@ -10,41 +10,50 @@ export interface LobbyProps {
   onReady: (playerId: number) => void;
   onStart: () => void;
   className?: string;
+  gridClassName?: string;
+  slotClassName?: string;
+  buttonClassName?: string;
 }
 
-export function Lobby({ roomState, onJoin, onReady, onStart, className }: LobbyProps) {
+export function Lobby({
+  roomState,
+  onJoin,
+  onReady,
+  onStart,
+  className,
+  gridClassName,
+  slotClassName,
+  buttonClassName,
+}: LobbyProps) {
   const { canStart, readyCount } = useRoomState(roomState);
 
   return (
-    <div className={className} style={{ padding: 24 }}>
-      <h2 style={{ marginBottom: 8 }}>Room: {roomState.roomId}</h2>
+    <div className={className}>
+      <h2>Room: {roomState.roomId}</h2>
 
-      <div style={{ marginBottom: 16 }}>
+      <div>
         <RoomQRCode roomId={roomState.roomId} />
       </div>
 
-      <div role="status" aria-live="polite" style={{ marginBottom: 8, color: "#666" }}>
+      <div role="status" aria-live="polite">
         {readyCount} / {roomState.config.maxPlayers} players ready
         {!roomState.config.requireFull && ` (min ${roomState.config.minPlayers})`}
       </div>
 
       <PlayerSlotsGrid
         players={roomState.players}
+        className={gridClassName}
+        slotClassName={slotClassName}
         onJoin={onJoin}
         onReady={onReady}
       />
 
-      <div style={{ marginTop: 16 }}>
+      <div>
         <button
           type="button"
+          className={buttonClassName}
           onClick={onStart}
           disabled={!canStart}
-          style={{
-            padding: "10px 24px",
-            fontSize: 16,
-            cursor: canStart ? "pointer" : "not-allowed",
-            opacity: canStart ? 1 : 0.5,
-          }}
         >
           Start Game
         </button>
