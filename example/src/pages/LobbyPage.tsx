@@ -139,7 +139,7 @@ export function LobbyPage() {
 
       <div style={{ marginBottom: 24 }}>
         <div className="qr-wrapper">
-          <RoomQRCode roomId={roomState.roomId} url={buildRoomUrl(roomState.roomId, "/react-gameroom")} size={160} />
+          <RoomQRCode roomId={roomState.roomId} url={buildRoomUrl(roomState.roomId, "/react-gameroom/play")} size={160} />
         </div>
       </div>
 
@@ -151,7 +151,7 @@ export function LobbyPage() {
         players={roomState.players}
         className="lobby-grid"
         slotClassName="slot"
-        buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id, "/react-gameroom")}
+        buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id, "/react-gameroom/play")}
       />
 
       <button

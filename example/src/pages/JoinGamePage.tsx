@@ -22,7 +22,7 @@ export function JoinGamePage() {
       return;
     }
 
-    navigate(`/room/${roomCode}/player/${slotId}`);
+    navigate(`/play/room/${roomCode}/player/${slotId}`);
   }
 
   return (
@@ -37,7 +37,7 @@ export function JoinGamePage() {
         buttonClassName="btn"
         renderError={() => error ? <div className="text-error">{error}</div> : null}
       />
-      <Link to="/" className="back-link">← Back</Link>
+      <Link to="/play" className="back-link">← Back</Link>
     </div>
   );
 }

@@ -13,11 +13,11 @@ export function HomePage() {
       requireFull: true,
     });
     await set(ref(db, `rooms/${room.roomId}/state`), room);
-    navigate(`/room/${room.roomId}`);
+    navigate(`/play/room/${room.roomId}`);
   }
 
   function handleJoinGame() {
-    navigate("/join");
+    navigate("/play/join");
   }
 
   return (

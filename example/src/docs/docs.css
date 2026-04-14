@@ -1,0 +1,413 @@
+/* ========================================
+   Documentation Site Styles
+   ======================================== */
+
+:root {
+  --docs-bg: #0f0f17;
+  --docs-surface: #1a1a2e;
+  --docs-border: #2a2a40;
+  --docs-accent: #e94560;
+  --docs-accent-soft: rgba(233, 69, 96, 0.15);
+  --docs-text: #e0e0e0;
+  --docs-text-dim: #888;
+  --docs-text-bright: #ffffff;
+  --docs-code-bg: #141422;
+  --docs-sidebar-w: 220px;
+  --docs-content-max: 780px;
+  --docs-header-h: 56px;
+}
+
+/* ---- Layout ---- */
+
+.docs-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--docs-header-h);
+  background: var(--docs-surface);
+  border-bottom: 1px solid var(--docs-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+}
+
+.docs-header-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--docs-text-bright);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+.docs-header-title span {
+  color: var(--docs-accent);
+}
+
+.docs-header-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.docs-header-links a {
+  color: var(--docs-text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+
+.docs-header-links a:hover {
+  color: var(--docs-text);
+}
+
+.docs-demo-link {
+  padding: 6px 16px;
+  background: var(--docs-accent);
+  color: var(--docs-text-bright) !important;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: opacity 0.15s;
+}
+
+.docs-demo-link:hover {
+  opacity: 0.85;
+}
+
+.docs-shell {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--docs-header-h);
+}
+
+.docs-sidebar {
+  position: fixed;
+  top: var(--docs-header-h);
+  left: 0;
+  bottom: 0;
+  width: var(--docs-sidebar-w);
+  background: var(--docs-surface);
+  border-right: 1px solid var(--docs-border);
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+
+.docs-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.docs-sidebar-nav a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--docs-text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.docs-sidebar-nav a:hover {
+  color: var(--docs-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.docs-sidebar-nav a.active {
+  color: var(--docs-accent);
+  background: var(--docs-accent-soft);
+  font-weight: 600;
+}
+
+.docs-content {
+  margin-left: var(--docs-sidebar-w);
+  flex: 1;
+  padding: 40px 48px;
+  min-width: 0;
+}
+
+.docs-content-inner {
+  max-width: var(--docs-content-max);
+}
+
+/* ---- Typography ---- */
+
+.docs-content h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--docs-text-bright);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.docs-content h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--docs-text-bright);
+  margin: 48px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--docs-border);
+}
+
+.docs-content h2:first-child {
+  margin-top: 0;
+}
+
+.docs-content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--docs-text-bright);
+  margin: 32px 0 12px;
+}
+
+.docs-content h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--docs-text);
+  margin: 24px 0 8px;
+}
+
+.docs-content p {
+  color: var(--docs-text);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+
+.docs-content ul, .docs-content ol {
+  color: var(--docs-text);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.docs-content li {
+  margin-bottom: 4px;
+}
+
+.docs-content a {
+  color: var(--docs-accent);
+  text-decoration: none;
+}
+
+.docs-content a:hover {
+  text-decoration: underline;
+}
+
+.docs-content strong {
+  color: var(--docs-text-bright);
+  font-weight: 600;
+}
+
+.docs-subtitle {
+  font-size: 17px;
+  color: var(--docs-text-dim);
+  margin: 0 0 32px;
+  line-height: 1.5;
+}
+
+/* ---- Code ---- */
+
+.docs-content code {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+}
+
+.docs-content p code,
+.docs-content li code,
+.docs-content td code {
+  background: var(--docs-code-bg);
+  border: 1px solid var(--docs-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 13px;
+  color: var(--docs-accent);
+}
+
+.code-block {
+  background: var(--docs-code-bg);
+  border: 1px solid var(--docs-border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.code-block code {
+  color: var(--docs-text);
+}
+
+.code-block .comment {
+  color: #555;
+}
+
+.code-block .keyword {
+  color: #c792ea;
+}
+
+.code-block .string {
+  color: #c3e88d;
+}
+
+.code-block .type {
+  color: #ffcb6b;
+}
+
+/* ---- Tables ---- */
+
+.docs-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 20px;
+  font-size: 14px;
+}
+
+.docs-content th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--docs-border);
+  color: var(--docs-text-bright);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.docs-content td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--docs-border);
+  color: var(--docs-text);
+  vertical-align: top;
+}
+
+.docs-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---- Hero (DocsHome) ---- */
+
+.docs-hero {
+  padding: 24px 0 40px;
+}
+
+.docs-hero h1 {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.docs-hero .docs-subtitle {
+  font-size: 18px;
+}
+
+.docs-install {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.docs-install .code-block {
+  margin: 0;
+  flex: 0 auto;
+}
+
+/* ---- Callout ---- */
+
+.docs-callout {
+  background: var(--docs-accent-soft);
+  border-left: 3px solid var(--docs-accent);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--docs-text);
+}
+
+/* ---- State machine diagram ---- */
+
+.docs-state-machine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 14px;
+  color: var(--docs-text);
+}
+
+.docs-state {
+  padding: 6px 14px;
+  background: var(--docs-code-bg);
+  border: 1px solid var(--docs-border);
+  border-radius: 6px;
+  color: var(--docs-text-bright);
+}
+
+.docs-arrow {
+  color: var(--docs-accent);
+}
+
+/* ---- Next page link ---- */
+
+.docs-next-page {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--docs-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.docs-next-page a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--docs-text-dim);
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.15s;
+}
+
+.docs-next-page a:hover {
+  color: var(--docs-accent);
+}
+
+.docs-next-page .docs-next-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.docs-next-page .docs-next-title {
+  color: var(--docs-text-bright);
+  font-weight: 600;
+}
+
+.docs-next-page a:hover .docs-next-title {
+  color: var(--docs-accent);
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 768px) {
+  .docs-sidebar {
+    display: none;
+  }
+
+  .docs-content {
+    margin-left: 0;
+    padding: 24px 20px;
+  }
+
+  .docs-header-links a:not(.docs-demo-link) {
+    display: none;
+  }
+
+  .docs-hero h1 {
+    font-size: 28px;
+  }
+}
