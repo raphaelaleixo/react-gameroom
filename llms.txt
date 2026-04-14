@@ -129,6 +129,10 @@ labels, headings). This enables i18n and alternative lobby flows (e.g., view-onl
 slots in first-come-first-served mode show "Empty" instead of a "Join" button when
 no onJoin/href is provided).
 
+PlayerSlotView renders as a link whenever href is provided, regardless of slot status.
+PlayerSlotsGrid accepts filterEmpty: when true, only non-empty slots are rendered
+(useful for rejoin grids where empty seats should be hidden).
+
 RoomInfoModal is status-aware: during lobby, QR code points to buildJoinUrl and
 links say "Join". When game is started, QR points to buildRejoinUrl and links say
 "Rejoin". Pass basePath prop to set URL prefix. Labels are customizable via

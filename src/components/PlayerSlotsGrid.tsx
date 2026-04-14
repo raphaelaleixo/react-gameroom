@@ -12,16 +12,20 @@ export interface PlayerSlotsGridProps {
   slotClassName?: string;
   /** Custom labels forwarded to each PlayerSlotView. */
   labels?: PlayerSlotLabels;
+  /** When true, only renders non-empty slots (useful for rejoin grids). */
+  filterEmpty?: boolean;
 }
 
-export function PlayerSlotsGrid({ players, onJoin, onReady, buildSlotHref, className, slotClassName, labels }: PlayerSlotsGridProps) {
+export function PlayerSlotsGrid({ players, onJoin, onReady, buildSlotHref, className, slotClassName, labels, filterEmpty }: PlayerSlotsGridProps) {
+  const visibleSlots = filterEmpty ? players.filter((s) => s.status !== "empty") : players;
+
   return (
     <div
       className={className}
       role="list"
       aria-label="Player slots"
     >
-      {players.map((slot) => (
+      {visibleSlots.map((slot) => (
         <div key={slot.id} role="listitem">
           <PlayerSlotView
             slot={slot}

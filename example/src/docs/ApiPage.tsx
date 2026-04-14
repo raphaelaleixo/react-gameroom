@@ -151,6 +151,13 @@ interface RoomDerivedState {
   players={roomState.players}
   labels={{ empty: "Waiting...", ready: "Joined" }}
 />`}</CodeBlock>
+      <p>For a rejoin grid (game already started), use <code>filterEmpty</code> to hide unused slots and <code>buildSlotHref</code> to link players back to their screens:</p>
+      <CodeBlock language="tsx">{`<PlayerSlotsGrid
+  players={roomState.players}
+  filterEmpty
+  buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id)}
+  labels={{ ready: "Rejoin" }}
+/>`}</CodeBlock>
 
       <h3>{"<PlayerSlotView>"}</h3>
       <p>

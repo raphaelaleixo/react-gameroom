@@ -38,7 +38,7 @@ export interface PlayerSlotViewProps {
 
 export function PlayerSlotView({ slot, onJoin, onReady, href, className, labels: labelsProp }: PlayerSlotViewProps) {
   const labels = { ...defaultLabels, ...labelsProp };
-  const isLink = href != null && slot.status !== "ready";
+  const isLink = href != null;
   const Tag = isLink ? "a" : "div";
 
   return (
