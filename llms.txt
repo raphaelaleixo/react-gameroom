@@ -1,0 +1,109 @@
+# react-gameroom
+
+> A stateless React component library for multiplayer game lobby management. Pure helper functions manage room state transitions (create → join → ready → start). You bring your own state management — the library takes state in and returns new state out.
+
+## Install
+
+npm install react-gameroom
+
+Peer dependencies: react >= 17.0.0, react-dom >= 17.0.0
+
+## Types
+
+type PlayerStatus = "empty" | "joining" | "ready"
+type RoomStatus = "lobby" | "started"
+
+interface PlayerSlot<T = unknown> {
+  id: number           // 1-based slot index
+  status: PlayerStatus
+  name?: string        // display name, set via joinPlayer/setPlayerJoining
+  data?: T             // game-specific data (role, color, etc.)
+}
+
+interface RoomConfig {
+  minPlayers: number
+  maxPlayers: number
+  requireFull: boolean // if true, all slots must be ready to start
+}
+
+interface RoomState<T = unknown> {
+  roomId: string
+  status: RoomStatus
+  players: PlayerSlot<T>[] // always length === maxPlayers
+  config: RoomConfig
+}
+
+interface RoomDerivedState {
+  isLobby: boolean
+  isStarted: boolean
+  readyCount: number
+  emptyCount: number
+  canStart: boolean
+  playerCount: number              // non-empty slots
+  playerNames: Record<number, string> // id → name for named players
+}
+
+## Helpers
+
+All helpers are pure functions: they take a RoomState and return a new RoomState without mutation.
+
+createInitialRoom(config: RoomConfig): RoomState
+  Creates a room with a generated ID and all slots empty.
+  Throws if config is invalid (min < 1, max < 1, min > max).
+
+setPlayerJoining(state, playerId, name?, data?): RoomState
+  Transitions slot from "empty" → "joining". No-op if slot is not empty.
+
+setPlayerReady(state, playerId): RoomState
+  Transitions slot from "joining" → "ready". No-op if slot is not joining.
+
+joinPlayer(state, playerId, name?, data?): RoomState
+  Shorthand: setPlayerJoining + setPlayerReady in one call.
+
+resetPlayer(state, playerId): RoomState
+  Resets slot to "empty", clearing name and data. No-op if already empty.
+
+startGame(state): RoomState
+  Transitions room from "lobby" → "started" if:
+  - readyCount >= config.minPlayers
+  - If requireFull: readyCount === config.maxPlayers
+  No-op if conditions not met or already started.
+
+## Hook
+
+useRoomState(roomState: RoomState): RoomDerivedState
+  Memoized React hook. Returns computed fields: canStart, readyCount,
+  emptyCount, playerCount, playerNames, isLobby, isStarted.
+
+## Utils
+
+generateRoomId(length?: number): string
+  Random alphanumeric code (default 5 chars). Uses crypto.getRandomValues when available.
+
+buildRoomUrl(roomId, basePath?): string
+  Returns URL: {origin}{basePath}/room/{roomId}
+
+buildPlayerUrl(roomId, playerId, basePath?): string
+  Returns URL: {origin}{basePath}/room/{roomId}/player/{playerId}
+
+parseRoomFromUrl(url): { roomId: string; playerId?: number } | null
+  Parses /room/{id} and /room/{id}/player/{n} patterns from a URL.
+
+## Example
+
+import { createInitialRoom, joinPlayer, startGame, useRoomState } from "react-gameroom";
+
+// 1. Create a room (2-4 players, doesn't need to be full)
+let room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false });
+
+// 2. Players join (slot ID is 1-based)
+room = joinPlayer(room, 1, "Alice");
+room = joinPlayer(room, 2, "Bob");
+
+// 3. Check if game can start
+const { canStart, readyCount } = useRoomState(room);
+// canStart === true, readyCount === 2
+
+// 4. Start the game
+room = startGame(room);
+// room.status === "started"
