@@ -102,6 +102,8 @@ export function LobbyPage() {
           open={showInfo}
           onClose={() => setShowInfo(false)}
           className="room-info-modal"
+          closeButtonClassName="room-info-close"
+          linkClassName="room-info-link"
         />
 
         <h2 className="title" style={{ fontSize: 28, marginBottom: 24 }}>Rock Paper Scissors</h2>

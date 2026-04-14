@@ -199,9 +199,10 @@ A form where players enter a room code to join. Headless — style via className
 
 ```tsx
 <JoinGame
-  onJoin={(roomCode) => { /* validate & navigate */ }}
+  onJoin={async (roomCode) => { /* validate & navigate */ }}
   renderError={() => error ? <div className="error">{error}</div> : null}
   formClassName="join-form"
+  labelClassName="label"
   inputClassName="input"
   buttonClassName="btn"
 />
@@ -209,7 +210,7 @@ A form where players enter a room code to join. Headless — style via className
 
 #### `<RoomInfoModal>`
 
-A modal overlay that displays the room code, QR code, and player join URLs. Useful for letting players access room info at any point during gameplay.
+A `<dialog>`-based modal that displays the room code, QR code, and player join URLs. Uses the native `showModal()` API for built-in backdrop, focus trapping, and Escape to close.
 
 ```tsx
 const [showInfo, setShowInfo] = useState(false);
@@ -219,10 +220,13 @@ const [showInfo, setShowInfo] = useState(false);
   roomState={roomState}
   open={showInfo}
   onClose={() => setShowInfo(false)}
+  className="modal-dialog"
+  closeButtonClassName="modal-close"
+  linkClassName="modal-link"
 />
 ```
 
-The modal renders a semi-transparent backdrop (click to dismiss), QR code (via `RoomQRCode`), and a list of player URLs. It uses minimal inline styles for positioning — apply your own theme via the optional `className` prop.
+Style the backdrop via the `::backdrop` pseudo-element on your dialog class. Clicking the backdrop dismisses the modal.
 
 ### Utils
 
@@ -495,7 +499,7 @@ The `--host` flag exposes the server on your local network so you can open the p
 
 All components include built-in accessibility support:
 
-- **`RoomInfoModal`** — uses `role="dialog"` with `aria-modal`, `aria-labelledby`, keyboard focus trap (Tab/Shift+Tab cycle within the modal), and Escape key to close. The close button has an accessible label.
+- **`RoomInfoModal`** — uses the native `<dialog>` element with `showModal()`, which provides built-in `aria-modal`, focus trapping, and Escape to close. The dialog is labelled via `aria-labelledby`. The close button has an accessible label.
 - **`RoomQRCode`** — the QR code SVG has `role="img"` and a descriptive `aria-label` so screen readers announce its purpose.
 - **`JoinGame`** — the room code input has a visible `<label>` and `aria-required`.
 - **`PlayerScreen`** — status messages ("Game Started!", "You're joining...", "Ready!") use `aria-live="polite"` regions. Invalid slot errors use `role="alert"`.

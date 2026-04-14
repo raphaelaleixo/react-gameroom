@@ -405,17 +405,66 @@ a {
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
-/* ---- Room info modal (dark theme override) ---- */
+/* ---- Room info modal ---- */
+
+.room-info-modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+}
 
 .room-info-modal {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   color: var(--text-primary);
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
 }
 
-.room-info-modal a {
+.room-info-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.room-info-modal h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.room-info-modal [data-room-info-qr] {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.room-info-modal [data-room-info-links] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.room-info-link {
+  display: block;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
   color: var(--accent);
   font-size: 13px;
+}
+
+.room-info-link:hover {
+  border-color: var(--accent);
 }
 
 /* ---- Player page header ---- */

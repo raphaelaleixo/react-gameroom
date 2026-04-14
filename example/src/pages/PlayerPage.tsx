@@ -77,6 +77,8 @@ export function PlayerPage() {
             open={showInfo}
             onClose={() => setShowInfo(false)}
             className="room-info-modal"
+            closeButtonClassName="room-info-close"
+            linkClassName="room-info-link"
           />
 
           <h2 className="title" style={{ fontSize: 24, marginBottom: 8 }}>Rock Paper Scissors</h2>
