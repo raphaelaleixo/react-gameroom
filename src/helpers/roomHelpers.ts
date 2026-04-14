@@ -1,6 +1,15 @@
 import type { RoomConfig, RoomState } from "../types/room";
 import { generateRoomId } from "../utils/roomUtils";
 
+/**
+ * Creates a new room with all player slots set to "empty".
+ * @param config - Room configuration (min/max players, requireFull).
+ * @returns A fresh RoomState with a generated roomId and "lobby" status.
+ * @throws If config has invalid player counts (min < 1, max < 1, or min > max).
+ * @example
+ * const room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false });
+ * // room.players.length === 4, all status "empty"
+ */
 export function createInitialRoom<T = unknown>(config: RoomConfig): RoomState<T> {
   if (config.maxPlayers < 1 || config.minPlayers < 1 || config.minPlayers > config.maxPlayers) {
     throw new Error(
@@ -21,6 +30,15 @@ export function createInitialRoom<T = unknown>(config: RoomConfig): RoomState<T>
   };
 }
 
+/**
+ * Transitions a player slot from "empty" to "joining".
+ * No-op if the slot is not empty or does not exist.
+ * @param state - Current room state.
+ * @param playerId - 1-based player slot ID.
+ * @param name - Optional display name for the player.
+ * @param data - Optional game-specific data to attach to the slot.
+ * @returns New RoomState with the updated slot.
+ */
 export function setPlayerJoining<T>(state: RoomState<T>, playerId: number, name?: string, data?: T): RoomState<T> {
   const slot = state.players.find((p) => p.id === playerId);
   if (!slot || slot.status !== "empty") return state;
@@ -35,6 +53,13 @@ export function setPlayerJoining<T>(state: RoomState<T>, playerId: number, name?
   };
 }
 
+/**
+ * Transitions a player slot from "joining" to "ready".
+ * No-op if the slot is not in "joining" status.
+ * @param state - Current room state.
+ * @param playerId - 1-based player slot ID.
+ * @returns New RoomState with the updated slot.
+ */
 export function setPlayerReady<T>(state: RoomState<T>, playerId: number): RoomState<T> {
   const slot = state.players.find((p) => p.id === playerId);
   if (!slot || slot.status !== "joining") return state;
@@ -47,10 +72,30 @@ export function setPlayerReady<T>(state: RoomState<T>, playerId: number): RoomSt
   };
 }
 
+/**
+ * Shorthand that transitions a slot from "empty" to "ready" in one call.
+ * Equivalent to calling `setPlayerJoining` then `setPlayerReady`.
+ * @param state - Current room state.
+ * @param playerId - 1-based player slot ID.
+ * @param name - Optional display name for the player.
+ * @param data - Optional game-specific data to attach to the slot.
+ * @returns New RoomState with the player joined and ready.
+ * @example
+ * let room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false });
+ * room = joinPlayer(room, 1, "Alice");
+ * // room.players[0].status === "ready", room.players[0].name === "Alice"
+ */
 export function joinPlayer<T>(state: RoomState<T>, playerId: number, name?: string, data?: T): RoomState<T> {
   return setPlayerReady(setPlayerJoining(state, playerId, name, data), playerId);
 }
 
+/**
+ * Resets a player slot back to "empty", clearing name and data.
+ * No-op if the slot is already empty.
+ * @param state - Current room state.
+ * @param playerId - 1-based player slot ID.
+ * @returns New RoomState with the slot reset.
+ */
 export function resetPlayer<T>(state: RoomState<T>, playerId: number): RoomState<T> {
   const slot = state.players.find((p) => p.id === playerId);
   if (!slot || slot.status === "empty") return state;
@@ -63,6 +108,19 @@ export function resetPlayer<T>(state: RoomState<T>, playerId: number): RoomState
   };
 }
 
+/**
+ * Transitions the room from "lobby" to "started" if readiness conditions are met.
+ * Requires at least `config.minPlayers` ready. If `config.requireFull` is true,
+ * all slots must be ready. No-op if conditions are not met or room is already started.
+ * @param state - Current room state.
+ * @returns New RoomState with status "started", or the same state if conditions aren't met.
+ * @example
+ * let room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false });
+ * room = joinPlayer(room, 1, "Alice");
+ * room = joinPlayer(room, 2, "Bob");
+ * room = startGame(room);
+ * // room.status === "started"
+ */
 export function startGame<T>(state: RoomState<T>): RoomState<T> {
   if (state.status !== "lobby") return state;
 
