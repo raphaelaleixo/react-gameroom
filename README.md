@@ -119,7 +119,7 @@ A memoized hook that computes derived values from room state. Returns `canStart`
 
 #### `<Lobby>`
 
-The host/broadcast view. Displays the room code, a QR code for players to scan, a grid of player slots, and a "Start Game" button.
+The host/broadcast view. Displays the room code, a QR code for players to scan, a grid of player slots, and a "Start Game" button. Ships with no inline styles — all visual presentation is controlled by the consumer via `className` props.
 
 ```tsx
 <Lobby
@@ -127,6 +127,10 @@ The host/broadcast view. Displays the room code, a QR code for players to scan, 
   onJoin={(playerId) => {}}
   onReady={(playerId) => {}}
   onStart={() => {}}
+  className="my-lobby"
+  gridClassName="my-grid"
+  slotClassName="my-slot"
+  buttonClassName="my-btn"
 />
 ```
 
@@ -145,26 +149,35 @@ The individual player view (typically shown on a mobile device). Shows the join/
 
 #### `<PlayerSlotsGrid>`
 
-A CSS Grid layout of player slot cards. Used internally by `Lobby` but available for custom layouts.
+A layout wrapper for player slot cards. Used internally by `Lobby` but available for custom layouts. Accepts `slotClassName` to forward a class to each `PlayerSlotView`.
 
 ```tsx
 <PlayerSlotsGrid
   players={roomState.players}
   onJoin={(playerId) => {}}
   onReady={(playerId) => {}}
+  slotClassName="my-slot"
 />
 ```
 
 #### `<PlayerSlotView>`
 
-A single player slot card showing the current status with appropriate action buttons.
+A single player slot showing the current status with appropriate action buttons. Exposes `data-status` (`"empty"`, `"joining"`, `"ready"`) on its wrapper element for CSS targeting.
 
 ```tsx
 <PlayerSlotView
   slot={roomState.players[0]}
   onJoin={() => {}}
   onReady={() => {}}
+  className="my-slot"
 />
+```
+
+Style by status with attribute selectors:
+
+```css
+.my-slot[data-status="ready"] { border-color: green; }
+.my-slot[data-status="joining"] { border-color: orange; }
 ```
 
 #### `<RoomQRCode>`
@@ -345,7 +358,13 @@ The host sees the `Lobby` component from `react-gameroom`, which displays the ro
 ```tsx
 <Lobby
   roomState={roomState}
-  onJoin={(playerId) => navigate(`/room/${roomId}/player/${playerId}`)}
+  className="lobby-inner"
+  gridClassName="lobby-grid"
+  slotClassName="slot"
+  buttonClassName="btn"
+  onJoin={(playerId) => {
+    window.location.href = buildPlayerUrl(roomState.roomId, playerId);
+  }}
   onReady={(playerId) => updateRoom(setPlayerReady(roomState, playerId))}
   onStart={() => updateRoom(startGame(roomState))}
 />
@@ -458,7 +477,7 @@ All components include built-in accessibility support:
 - **`PlayerSlotView`** — Join and Ready buttons have contextual `aria-label`s (e.g., "Join as Player 2"). Status text uses `aria-live="polite"`.
 - **`PlayerSlotsGrid`** — uses `role="list"` with `aria-label="Player slots"` and wraps each slot in a `role="listitem"`.
 
-Components use inline styles for layout but do not override focus outlines, so browser-default focus indicators remain visible. Since the library is headless in terms of theming (consumers apply styles via `className`), color contrast is ultimately the consumer's responsibility.
+Components ship with no inline styles, giving consumers full control over theming via `className` props. Browser-default focus indicators remain visible. Since the library is headless (consumers apply styles via `className`), color contrast is the consumer's responsibility.
 
 ## License
 
