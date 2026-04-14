@@ -152,6 +152,8 @@ slot.data?.role; // "host" — fully typed
 
 `resetPlayer` clears both `name` and `data`. If you don't need custom data, just ignore the generic — it defaults to `unknown`.
 
+**Best for static per-player config** (team color, avatar, preferred role) set once at join time. Avoid using `data` for live game state that changes frequently or is written by multiple players — that creates contention on the room state path. Store fast-changing game data in separate Firebase paths instead.
+
 ## API Reference
 
 ### Types
@@ -186,6 +188,7 @@ interface RoomDerivedState {
   readyCount: number;
   emptyCount: number;
   canStart: boolean;
+  playerCount: number;    // non-empty slots (joining + ready)
   playerNames: Record<number, string>; // { 1: "Alice", 2: "Bob" } — only named players
 }
 ```
