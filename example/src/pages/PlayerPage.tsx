@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ref, set, onValue } from "firebase/database";
-import { joinPlayer, RoomInfoModal } from "react-gameroom";
+import { joinPlayer, PlayerScreen, RoomInfoModal } from "react-gameroom";
 import { useFirebaseRoom } from "../hooks/useFirebaseRoom";
 import { NameInput } from "../components/NameInput";
 import { RPSPicker } from "../components/RPSPicker";
@@ -54,9 +54,6 @@ export function PlayerPage() {
   if (loading) return <div className="page"><div className="text-secondary">Loading...</div></div>;
   if (error || !roomState) return <div className="page"><div className="text-error">Room not found.</div></div>;
 
-  const slot = roomState.players.find((p) => p.id === playerId);
-  if (!slot) return <div className="page"><div className="text-error">Invalid player slot.</div></div>;
-
   async function handleNameSaved() {
     if (!roomState) return;
     await updateRoom(joinPlayer(roomState, playerId));
@@ -67,52 +64,51 @@ export function PlayerPage() {
     await set(ref(db, `rooms/${roomId}/game/choices/${playerId}`), choice);
   }
 
-  // Game started — show RPS UI
-  if (roomState.status === "started") {
-    return (
-      <div className="page">
-        <button type="button" className="info-btn" onClick={() => setShowInfo(true)}>i</button>
-        <RoomInfoModal
-          roomState={roomState}
-          open={showInfo}
-          onClose={() => setShowInfo(false)}
-          className="room-info-modal"
-        />
-
-        <h2 className="title" style={{ fontSize: 24, marginBottom: 8 }}>Rock Paper Scissors</h2>
-        <div className="player-header">
-          {playerNames[playerId] || `Player ${playerId}`}
-        </div>
-
-        {!myChoice && (
-          <div style={{ textAlign: "center" }}>
-            <p className="text-secondary" style={{ marginBottom: 16 }}>Choose your move:</p>
-            <RPSPicker onPick={handlePick} disabled={false} />
-          </div>
-        )}
-
-        {myChoice && !gameResult && (
-          <div className="text-secondary" style={{ textAlign: "center", marginTop: 16 }}>
-            You chose <span className="text-accent" style={{ fontWeight: 700 }}>{myChoice}</span>. Waiting for opponent...
-          </div>
-        )}
-
-        {gameResult && <RPSResult result={gameResult} playerNames={playerNames} />}
-      </div>
-    );
-  }
-
-  // Lobby — show name input / waiting state
   return (
-    <div className="page">
-      <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
-
-      {slot.status === "empty" && (
-        <NameInput roomId={roomId!} playerId={playerId} onNameSaved={handleNameSaved} />
-      )}
-
-      {slot.status === "ready" && (
+    <PlayerScreen
+      roomState={roomState}
+      playerId={playerId}
+      className="page"
+      renderStarted={() => (
         <>
+          <button type="button" className="info-btn" onClick={() => setShowInfo(true)}>i</button>
+          <RoomInfoModal
+            roomState={roomState}
+            open={showInfo}
+            onClose={() => setShowInfo(false)}
+            className="room-info-modal"
+          />
+
+          <h2 className="title" style={{ fontSize: 24, marginBottom: 8 }}>Rock Paper Scissors</h2>
+          <div className="player-header">
+            {playerNames[playerId] || `Player ${playerId}`}
+          </div>
+
+          {!myChoice && (
+            <div style={{ textAlign: "center" }}>
+              <p className="text-secondary" style={{ marginBottom: 16 }}>Choose your move:</p>
+              <RPSPicker onPick={handlePick} disabled={false} />
+            </div>
+          )}
+
+          {myChoice && !gameResult && (
+            <div className="text-secondary" style={{ textAlign: "center", marginTop: 16 }}>
+              You chose <span className="text-accent" style={{ fontWeight: 700 }}>{myChoice}</span>. Waiting for opponent...
+            </div>
+          )}
+
+          {gameResult && <RPSResult result={gameResult} playerNames={playerNames} />}
+        </>
+      )}
+      renderEmpty={() => (
+        <>
+          <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
+          <NameInput roomId={roomId!} playerId={playerId} onNameSaved={handleNameSaved} />
+        </>
+      )}
+      renderReady={() => (
+        <>
+          <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
           <div className="text-secondary" style={{ marginBottom: 12 }}>
             Playing as: <span className="text-accent">{playerNames[playerId] || `Player ${playerId}`}</span>
           </div>
@@ -124,6 +120,6 @@ export function PlayerPage() {
           </div>
         </>
       )}
-    </div>
+    />
   );
 }

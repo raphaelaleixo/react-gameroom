@@ -27,7 +27,7 @@ This is a **published React component library** (not an app) for multiplayer gam
 
 ### Component hierarchy
 
-`Lobby` (host view with QR code + grid) → `PlayerSlotsGrid` → `PlayerSlotView`. `PlayerScreen` is the separate mobile/player view. `RoomQRCode` wraps qrcode.react.
+`PlayerSlotsGrid` → `PlayerSlotView`. `PlayerScreen` is the mobile/player view with render props (`renderStarted`, `renderEmpty`, `renderReady`). `RoomQRCode` wraps qrcode.react. Consumers compose these primitives into their own layouts.
 
 ## Conventions
 

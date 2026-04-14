@@ -2,11 +2,12 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ref, onValue, set } from "firebase/database";
 import {
-  setPlayerReady,
   startGame,
-  Lobby,
+  useRoomState,
+  PlayerSlotsGrid,
   RoomQRCode,
   RoomInfoModal,
+  buildRoomUrl,
   buildPlayerUrl,
 } from "react-gameroom";
 import { useFirebaseRoom } from "../hooks/useFirebaseRoom";
@@ -80,6 +81,10 @@ export function LobbyPage() {
     }
   }, [choices, roomId, gameResult]);
 
+  const { canStart, readyCount } = useRoomState(roomState ?? {
+    roomId: "", status: "lobby", players: [], config: { minPlayers: 0, maxPlayers: 0, requireFull: false },
+  });
+
   if (loading) return <div className="page"><div className="text-secondary">Loading...</div></div>;
   if (error || !roomState) return <div className="page"><div className="text-error">Room not found.</div></div>;
 
@@ -139,22 +144,30 @@ export function LobbyPage() {
 
       <div style={{ marginBottom: 24 }}>
         <div className="qr-wrapper">
-          <RoomQRCode roomId={roomState.roomId} size={160} />
+          <RoomQRCode roomId={roomState.roomId} url={buildRoomUrl(roomState.roomId, "/react-gameroom")} size={160} />
         </div>
       </div>
 
-      <Lobby
-        roomState={roomState}
-        className="lobby-inner"
-        gridClassName="lobby-grid"
+      <div className="lobby-ready-count">
+        {readyCount} / {roomState.config.maxPlayers} players ready
+      </div>
+
+      <PlayerSlotsGrid
+        players={roomState.players}
+        className="lobby-grid"
         slotClassName="slot"
-        buttonClassName="btn"
-        onJoin={(playerId) => {
-          window.location.href = buildPlayerUrl(roomState.roomId, playerId);
-        }}
-        onReady={(playerId) => updateRoom(setPlayerReady(roomState, playerId))}
-        onStart={() => updateRoom(startGame(roomState))}
+        buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id, "/react-gameroom")}
       />
+
+      <button
+        type="button"
+        className="btn"
+        onClick={() => updateRoom(startGame(roomState))}
+        disabled={!canStart}
+        style={{ marginTop: 16 }}
+      >
+        Start Game
+      </button>
     </div>
   );
 }

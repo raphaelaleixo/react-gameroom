@@ -6,11 +6,12 @@ export interface PlayerSlotsGridProps {
   players: PlayerSlot[];
   onJoin?: (playerId: number) => void;
   onReady?: (playerId: number) => void;
+  buildSlotHref?: (playerId: number) => string;
   className?: string;
   slotClassName?: string;
 }
 
-export function PlayerSlotsGrid({ players, onJoin, onReady, className, slotClassName }: PlayerSlotsGridProps) {
+export function PlayerSlotsGrid({ players, onJoin, onReady, buildSlotHref, className, slotClassName }: PlayerSlotsGridProps) {
   return (
     <div
       className={className}
@@ -22,6 +23,7 @@ export function PlayerSlotsGrid({ players, onJoin, onReady, className, slotClass
           <PlayerSlotView
             slot={slot}
             className={slotClassName}
+            href={buildSlotHref ? buildSlotHref(slot.id) : undefined}
             onJoin={onJoin ? () => onJoin(slot.id) : undefined}
             onReady={onReady ? () => onReady(slot.id) : undefined}
           />

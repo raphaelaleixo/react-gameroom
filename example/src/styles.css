@@ -183,6 +183,9 @@ a {
   text-align: center;
   min-width: 140px;
   cursor: pointer;
+  display: block;
+  text-decoration: none;
+  color: inherit;
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
@@ -232,6 +235,11 @@ a {
   font-size: 14px;
 }
 
+.slot[data-status="empty"] > div:last-child {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
 .slot button {
   background: transparent;
   border: 1px solid var(--accent);
@@ -264,21 +272,6 @@ a {
   color: var(--text-secondary);
   font-size: 16px;
   margin-bottom: 16px;
-}
-
-/* ---- Lobby inner (hides Lobby built-ins, themed wrapper provides its own) ---- */
-
-.lobby-inner {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.lobby-inner > h2,
-.lobby-inner > div:has(svg),
-.lobby-inner > [role="status"] {
-  display: none;
 }
 
 /* ---- Versus screen (game started, host view) ---- */

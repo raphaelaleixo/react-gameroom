@@ -13,7 +13,10 @@ Peer dependencies: `react >= 17.0.0` and `react-dom >= 17.0.0`.
 ## Quick Start
 
 ```tsx
-import { createInitialRoom, joinPlayer, startGame, Lobby } from "react-gameroom";
+import {
+  createInitialRoom, joinPlayer, startGame,
+  useRoomState, PlayerSlotsGrid, RoomQRCode, buildPlayerUrl,
+} from "react-gameroom";
 
 // 1. Create a room
 const room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false });
@@ -24,13 +27,17 @@ const updated = joinPlayer(room, 1); // Player 1 joins and is immediately ready
 // 3. Start the game when conditions are met
 const started = startGame(updated);
 
-// 4. Render the lobby UI
-<Lobby
-  roomState={room}
-  onJoin={(playerId) => { /* transition player to joining */ }}
-  onReady={(playerId) => { /* transition player to ready */ }}
-  onStart={() => { /* start the game */ }}
+// 4. Compose the lobby UI from primitives
+const { canStart, readyCount } = useRoomState(room);
+
+<RoomQRCode roomId={room.roomId} />
+<PlayerSlotsGrid
+  players={room.players}
+  buildSlotHref={(id) => buildPlayerUrl(room.roomId, id)}
 />
+<button onClick={() => startGame(room)} disabled={!canStart}>
+  Start Game ({readyCount} ready)
+</button>
 ```
 
 ## Core Concepts
@@ -113,30 +120,26 @@ Pure functions that return a new `RoomState`. They never mutate the input.
 
 #### `useRoomState(roomState: RoomState): RoomDerivedState`
 
-A memoized hook that computes derived values from room state. Returns `canStart`, `readyCount`, `emptyCount`, `isLobby`, and `isStarted`. This is used internally by the `Lobby` component and is also available for custom UIs.
+A memoized hook that computes derived values from room state. Returns `canStart`, `readyCount`, `emptyCount`, `isLobby`, and `isStarted`.
 
 ### Components
 
-#### `<Lobby>`
+#### `<PlayerScreen>`
 
-The host/broadcast view. Displays the room code, a QR code for players to scan, a grid of player slots, and a "Start Game" button. Ships with no inline styles — all visual presentation is controlled by the consumer via `className` props.
+The individual player view (typically shown on a mobile device). Shows the join/ready flow during lobby, and a "Game Started" message once the game begins. Ships with no inline styles. Supports render props to replace default content for each state:
 
 ```tsx
-<Lobby
+<PlayerScreen
   roomState={roomState}
-  onJoin={(playerId) => {}}
-  onReady={(playerId) => {}}
-  onStart={() => {}}
-  className="my-lobby"
-  gridClassName="my-grid"
-  slotClassName="my-slot"
-  buttonClassName="my-btn"
+  playerId={1}
+  className="my-player"
+  renderStarted={() => <MyGameUI />}
+  renderEmpty={() => <MyJoinForm />}
+  renderReady={() => <MyReadyMessage />}
 />
 ```
 
-#### `<PlayerScreen>`
-
-The individual player view (typically shown on a mobile device). Shows the join/ready flow during lobby, and a "Game Started" message once the game begins.
+When render props are omitted, `PlayerScreen` renders default UI with `onJoin`/`onReady` button callbacks:
 
 ```tsx
 <PlayerScreen
@@ -149,26 +152,28 @@ The individual player view (typically shown on a mobile device). Shows the join/
 
 #### `<PlayerSlotsGrid>`
 
-A layout wrapper for player slot cards. Used internally by `Lobby` but available for custom layouts. Accepts `slotClassName` to forward a class to each `PlayerSlotView`.
+A layout wrapper for player slot cards. Used internally by `Lobby` but available for custom layouts. Accepts `slotClassName` to forward a class to each `PlayerSlotView`, and `buildSlotHref` to render slots as links.
 
 ```tsx
 <PlayerSlotsGrid
   players={roomState.players}
   onJoin={(playerId) => {}}
   onReady={(playerId) => {}}
+  buildSlotHref={(playerId) => `/room/ABC12/player/${playerId}`}
   slotClassName="my-slot"
 />
 ```
 
 #### `<PlayerSlotView>`
 
-A single player slot showing the current status with appropriate action buttons. Exposes `data-status` (`"empty"`, `"joining"`, `"ready"`) on its wrapper element for CSS targeting.
+A single player slot showing the current status with appropriate action buttons. Exposes `data-status` (`"empty"`, `"joining"`, `"ready"`) on its wrapper element for CSS targeting. Pass `href` to render non-ready slots as `<a>` links instead of using button callbacks.
 
 ```tsx
 <PlayerSlotView
   slot={roomState.players[0]}
   onJoin={() => {}}
   onReady={() => {}}
+  href="/room/ABC12/player/1"
   className="my-slot"
 />
 ```
@@ -353,46 +358,61 @@ The app validates the room exists and has an open slot, then navigates the playe
 
 #### 3. The lobby (LobbyPage)
 
-The host sees the `Lobby` component from `react-gameroom`, which displays the room code, a QR code, and a grid showing each player slot's status:
+The host's lobby page composes primitives from `react-gameroom` — `RoomQRCode`, `PlayerSlotsGrid`, `useRoomState`, and `buildPlayerUrl` — into a custom themed layout:
 
 ```tsx
-<Lobby
-  roomState={roomState}
-  className="lobby-inner"
-  gridClassName="lobby-grid"
+const { canStart, readyCount } = useRoomState(roomState);
+
+<RoomQRCode roomId={roomState.roomId} url={buildRoomUrl(roomState.roomId, "/react-gameroom")} />
+
+<PlayerSlotsGrid
+  players={roomState.players}
+  className="lobby-grid"
   slotClassName="slot"
-  buttonClassName="btn"
-  onJoin={(playerId) => {
-    window.location.href = buildPlayerUrl(roomState.roomId, playerId);
-  }}
-  onReady={(playerId) => updateRoom(setPlayerReady(roomState, playerId))}
-  onStart={() => updateRoom(startGame(roomState))}
+  buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id, "/react-gameroom")}
 />
+
+<button onClick={() => updateRoom(startGame(roomState))} disabled={!canStart}>
+  Start Game
+</button>
 ```
 
-The callback pattern is central to how `react-gameroom` works:
-- `onJoin` — a slot was clicked in the lobby; the host navigates to that player's URL (useful for local play on a single device)
-- `onReady` — calls `setPlayerReady` to compute the next state, then `updateRoom` writes it to Firebase
-- `onStart` — calls `startGame` to transition the room, synced to all devices via Firebase
+- `useRoomState` computes `canStart` and `readyCount` from the current room state
+- `PlayerSlotsGrid` renders each slot as an `<a>` tag (via `buildSlotHref`) linking to the player's URL — when clicked, the browser navigates directly
+- `startGame` transitions the room to `"started"`, synced to all devices via Firebase
 
 #### 4. The player experience (PlayerPage)
 
-Each player sees a page at `/room/:roomId/player/:playerId`. During the lobby phase, they enter their name and are marked as ready:
+Each player sees a page at `/room/:roomId/player/:playerId`. The page uses the `PlayerScreen` component with render props to customize each phase:
 
 ```tsx
-// Name entry triggers joinPlayer, which transitions empty → joining → ready
-async function handleNameSaved() {
-  await updateRoom(joinPlayer(roomState, playerId));
-}
+<PlayerScreen
+  roomState={roomState}
+  playerId={playerId}
+  className="page"
+  renderStarted={() => <>{/* RPS game UI */}</>}
+  renderEmpty={() => (
+    <>
+      <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
+      <NameInput roomId={roomId} playerId={playerId} onNameSaved={handleNameSaved} />
+    </>
+  )}
+  renderReady={() => (
+    <>
+      <div className="player-header">Room {roomState.roomId} · Player {playerId}</div>
+      <div>Ready! Waiting for others...</div>
+    </>
+  )}
+/>
 ```
 
-The `joinPlayer` helper is a shorthand that chains `setPlayerJoining` and `setPlayerReady` into a single transition. The player's name is stored separately in Firebase at `rooms/{roomId}/playerNames/{playerId}` — this is game-specific data that lives outside `react-gameroom`'s `RoomState`.
-
-After both players are ready, the host presses "Start Game".
+- `renderEmpty` shows a name input form. When the player submits their name, `handleNameSaved` calls `joinPlayer` — a shorthand that chains `setPlayerJoining` and `setPlayerReady` into a single transition. The name is stored separately in Firebase at `rooms/{roomId}/playerNames/{playerId}` (game-specific data outside `react-gameroom`'s `RoomState`).
+- `renderReady` shows a waiting message with the player's name.
+- `renderStarted` switches to the game UI once the host presses "Start Game".
 
 #### 5. Playing the game (after start)
 
-Once `roomState.status` becomes `"started"`, both the lobby page and player page switch to the game UI. This is where the example diverges from `react-gameroom` entirely — all game logic is custom:
+Once `roomState.status` becomes `"started"`, the `renderStarted` callback kicks in and both the lobby page and player page show the game UI. This is where the example diverges from `react-gameroom` entirely — all game logic is custom:
 
 **Player side** — each player sees `RPSPicker` (three buttons: Rock, Paper, Scissors). Their choice is written to Firebase:
 
@@ -472,7 +492,6 @@ All components include built-in accessibility support:
 - **`RoomInfoModal`** — uses `role="dialog"` with `aria-modal`, `aria-labelledby`, keyboard focus trap (Tab/Shift+Tab cycle within the modal), and Escape key to close. The close button has an accessible label.
 - **`RoomQRCode`** — the QR code SVG has `role="img"` and a descriptive `aria-label` so screen readers announce its purpose.
 - **`JoinGame`** — the room code input has a visible `<label>` and `aria-required`.
-- **`Lobby`** — the player-ready count uses `role="status"` with `aria-live="polite"` so screen readers announce changes.
 - **`PlayerScreen`** — status messages ("Game Started!", "You're joining...", "Ready!") use `aria-live="polite"` regions. Invalid slot errors use `role="alert"`.
 - **`PlayerSlotView`** — Join and Ready buttons have contextual `aria-label`s (e.g., "Join as Player 2"). Status text uses `aria-live="polite"`.
 - **`PlayerSlotsGrid`** — uses `role="list"` with `aria-label="Player slots"` and wraps each slot in a `role="listitem"`.

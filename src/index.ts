@@ -28,8 +28,6 @@ export type { PlayerSlotViewProps } from "./components/PlayerSlotView";
 export { PlayerSlotsGrid } from "./components/PlayerSlotsGrid";
 export type { PlayerSlotsGridProps } from "./components/PlayerSlotsGrid";
 
-export { Lobby } from "./components/Lobby";
-export type { LobbyProps } from "./components/Lobby";
 
 export { PlayerScreen } from "./components/PlayerScreen";
 export type { PlayerScreenProps } from "./components/PlayerScreen";

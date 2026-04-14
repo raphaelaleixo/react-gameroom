@@ -1,0 +1,15 @@
+name: Cleanup Firebase Database
+
+on:
+  schedule:
+    - cron: "0 4 * * *" # Daily at 4:00 AM UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all rooms
+        run: |
+          curl -X DELETE \
+            "${{ secrets.VITE_FIREBASE_DATABASE_URL }}/rooms.json"

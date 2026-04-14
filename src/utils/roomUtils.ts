@@ -13,18 +13,14 @@ export function generateRoomId(length: number = 5): string {
   return result;
 }
 
-export function buildRoomUrl(roomId: string): string {
-  if (typeof window !== "undefined") {
-    return `${window.location.origin}/room/${roomId}`;
-  }
-  return `/room/${roomId}`;
+export function buildRoomUrl(roomId: string, basePath: string = ""): string {
+  const prefix = typeof window !== "undefined" ? window.location.origin + basePath : basePath;
+  return `${prefix}/room/${roomId}`;
 }
 
-export function buildPlayerUrl(roomId: string, playerId: number): string {
-  if (typeof window !== "undefined") {
-    return `${window.location.origin}/room/${roomId}/player/${playerId}`;
-  }
-  return `/room/${roomId}/player/${playerId}`;
+export function buildPlayerUrl(roomId: string, playerId: number, basePath: string = ""): string {
+  const prefix = typeof window !== "undefined" ? window.location.origin + basePath : basePath;
+  return `${prefix}/room/${roomId}/player/${playerId}`;
 }
 
 export function parseRoomFromUrl(

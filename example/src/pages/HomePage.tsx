@@ -23,16 +23,31 @@ export function HomePage() {
   return (
     <div className="page">
       <h1 className="title">Rock Paper Scissors</h1>
+      <p className="text-secondary" style={{ marginBottom: 16, fontSize: 14, letterSpacing: 1 }}>
+        An example implementation of <a href="https://github.com/raphaelaleixo/react-gameroom" target="_blank" rel="noopener noreferrer">react-gameroom</a>
+      </p>
       <div className="title-emoji">
         <span>✊</span>
         <span>✋</span>
         <span>✌️</span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", maxWidth: 280 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          width: "100%",
+          maxWidth: 280,
+        }}
+      >
         <button type="button" className="btn" onClick={handleNewGame}>
           New Game
         </button>
-        <button type="button" className="btn btn--secondary" onClick={handleJoinGame}>
+        <button
+          type="button"
+          className="btn btn--secondary"
+          onClick={handleJoinGame}
+        >
           Join Game
         </button>
       </div>
