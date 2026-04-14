@@ -1,16 +1,33 @@
 import { useMemo } from "react";
 import type { RoomState } from "../types/room";
 
+/** Computed values derived from a RoomState, returned by `useRoomState`. */
 export interface RoomDerivedState {
+  /** True if room status is "lobby". */
   isLobby: boolean;
+  /** True if room status is "started". */
   isStarted: boolean;
+  /** Number of players with "ready" status. */
   readyCount: number;
+  /** Number of slots with "empty" status. */
   emptyCount: number;
+  /** True if the game can be started (lobby + enough ready players). */
   canStart: boolean;
+  /** Number of non-empty slots (joining + ready). */
   playerCount: number;
+  /** Map of player ID to name, for players that have a name set. */
   playerNames: Record<number, string>;
 }
 
+/**
+ * React hook that computes derived state from a RoomState.
+ * Memoized — only recomputes when the input state changes.
+ * @param roomState - The current room state.
+ * @returns Derived values including `canStart`, `readyCount`, `playerCount`, etc.
+ * @example
+ * const { canStart, readyCount } = useRoomState(roomState);
+ * <button disabled={!canStart}>Start ({readyCount} ready)</button>
+ */
 export function useRoomState(roomState: RoomState): RoomDerivedState {
   return useMemo(() => {
     const isLobby = roomState.status === "lobby";
