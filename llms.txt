@@ -100,7 +100,7 @@ let room = createInitialRoom({ minPlayers: 2, maxPlayers: 4, requireFull: false 
 room = joinPlayer(room, 1, "Alice");
 room = joinPlayer(room, 2, "Bob");
 
-// 3. Check if game can start
+// 3. Check if game can start (inside a React component)
 const { canStart, readyCount } = useRoomState(room);
 // canStart === true, readyCount === 2
 
