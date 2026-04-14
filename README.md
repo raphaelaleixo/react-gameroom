@@ -57,6 +57,7 @@ const { canStart, readyCount } = useRoomState(room);
 - **Headless** — components ship with no inline styles. Style via `className` props and `data-status` attributes.
 - **Player identity** — optional `name` and generic `data<T>` on each slot, carried through transitions.
 - **Accessible** — native `<dialog>`, `aria-live` regions, focus trapping, semantic markup.
+- **Customizable labels** — all UI strings are overridable via `labels` props for i18n and alternative flows.
 - **Flexible** — works with Firebase, Supabase, your own server, or plain `useState`.
 
 ## Learn More

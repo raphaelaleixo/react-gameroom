@@ -116,3 +116,11 @@ const { canStart, readyCount } = useRoomState(room);
 // 4. Start the game
 room = startGame(room);
 // room.status === "started"
+
+## Notes
+
+Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, RoomInfoModal) accept
+an optional `labels` prop to customize all hardcoded UI strings (button text, status
+labels, headings). This enables i18n and alternative lobby flows (e.g., view-only
+slots in first-come-first-served mode show "Empty" instead of a "Join" button when
+no onJoin/href is provided).

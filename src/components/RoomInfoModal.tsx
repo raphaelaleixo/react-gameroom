@@ -3,6 +3,28 @@ import type { RoomState } from "../types/room";
 import { RoomQRCode } from "./RoomQRCode";
 import { buildPlayerUrl } from "../utils/roomUtils";
 
+/**
+ * Customizable labels for RoomInfoModal text.
+ * All fields are optional — defaults are used for any omitted field.
+ */
+export interface RoomInfoModalLabels {
+  /** Close button aria-label (default: "Close"). */
+  close?: string;
+  /** Heading prefix before roomId (default: "Room:"). */
+  roomHeading?: string;
+  /** Suffix after player name in links (default: "Join"). */
+  joinLink?: string;
+  /** Aria-label prefix for player links (default: "Join link for"). */
+  joinLinkAria?: string;
+}
+
+const defaultLabels: Required<RoomInfoModalLabels> = {
+  close: "Close",
+  roomHeading: "Room:",
+  joinLink: "Join",
+  joinLinkAria: "Join link for",
+};
+
 export interface RoomInfoModalProps {
   roomState: RoomState;
   open: boolean;
@@ -10,9 +32,12 @@ export interface RoomInfoModalProps {
   className?: string;
   closeButtonClassName?: string;
   linkClassName?: string;
+  /** Custom labels for modal text. */
+  labels?: RoomInfoModalLabels;
 }
 
-export function RoomInfoModal({ roomState, open, onClose, className, closeButtonClassName, linkClassName }: RoomInfoModalProps) {
+export function RoomInfoModal({ roomState, open, onClose, className, closeButtonClassName, linkClassName, labels: labelsProp }: RoomInfoModalProps) {
+  const labels = { ...defaultLabels, ...labelsProp };
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -57,13 +82,13 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
         type="button"
         className={closeButtonClassName}
         onClick={onClose}
-        aria-label="Close"
+        aria-label={labels.close}
         data-room-info-close=""
       >
         ✕
       </button>
 
-      <h3 id={headingId}>Room: {roomState.roomId}</h3>
+      <h3 id={headingId}>{labels.roomHeading} {roomState.roomId}</h3>
 
       <div data-room-info-qr="">
         <RoomQRCode roomId={roomState.roomId} size={160} />
@@ -78,9 +103,9 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
               key={slot.id}
               href={url}
               className={linkClassName}
-              aria-label={`Join link for ${label}`}
+              aria-label={`${labels.joinLinkAria} ${label}`}
             >
-              {label} — Join
+              {label} — {labels.joinLink}
             </a>
           );
         })}

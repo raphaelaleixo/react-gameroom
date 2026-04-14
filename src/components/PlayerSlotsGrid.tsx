@@ -1,6 +1,7 @@
 import React from "react";
 import type { PlayerSlot } from "../types/room";
 import { PlayerSlotView } from "./PlayerSlotView";
+import type { PlayerSlotLabels } from "./PlayerSlotView";
 
 export interface PlayerSlotsGridProps {
   players: PlayerSlot[];
@@ -9,9 +10,11 @@ export interface PlayerSlotsGridProps {
   buildSlotHref?: (playerId: number) => string;
   className?: string;
   slotClassName?: string;
+  /** Custom labels forwarded to each PlayerSlotView. */
+  labels?: PlayerSlotLabels;
 }
 
-export function PlayerSlotsGrid({ players, onJoin, onReady, buildSlotHref, className, slotClassName }: PlayerSlotsGridProps) {
+export function PlayerSlotsGrid({ players, onJoin, onReady, buildSlotHref, className, slotClassName, labels }: PlayerSlotsGridProps) {
   return (
     <div
       className={className}
@@ -26,6 +29,7 @@ export function PlayerSlotsGrid({ players, onJoin, onReady, buildSlotHref, class
             href={buildSlotHref ? buildSlotHref(slot.id) : undefined}
             onJoin={onJoin ? () => onJoin(slot.id) : undefined}
             onReady={onReady ? () => onReady(slot.id) : undefined}
+            labels={labels}
           />
         </div>
       ))}

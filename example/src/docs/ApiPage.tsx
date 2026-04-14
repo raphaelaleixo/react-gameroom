@@ -127,6 +127,12 @@ interface RoomDerivedState {
   onJoin={() => {}}
   onReady={() => {}}
 />`}</CodeBlock>
+      <p>Customize default UI text via the <code>labels</code> prop:</p>
+      <CodeBlock language="tsx">{`<PlayerScreen
+  roomState={roomState}
+  playerId={1}
+  labels={{ joinGame: "Entrar", readyUp: "Pronto", readyWaiting: "Aguardando..." }}
+/>`}</CodeBlock>
 
       <h3>{"<PlayerSlotsGrid>"}</h3>
       <p>
@@ -139,6 +145,11 @@ interface RoomDerivedState {
   onReady={(playerId) => {}}
   buildSlotHref={(playerId) => \`/room/ABC12/player/\${playerId}\`}
   slotClassName="my-slot"
+/>`}</CodeBlock>
+      <p>For view-only slots (first-come-first-served lobbies), omit <code>onJoin</code>, <code>onReady</code>, and <code>buildSlotHref</code>. Customize status labels via <code>labels</code>:</p>
+      <CodeBlock language="tsx">{`<PlayerSlotsGrid
+  players={roomState.players}
+  labels={{ empty: "Waiting...", ready: "Joined" }}
 />`}</CodeBlock>
 
       <h3>{"<PlayerSlotView>"}</h3>
@@ -158,6 +169,11 @@ interface RoomDerivedState {
       <p>Style by status with attribute selectors:</p>
       <CodeBlock language="css">{`.my-slot[data-status="ready"] { border-color: green; }
 .my-slot[data-status="joining"] { border-color: orange; }`}</CodeBlock>
+      <p>Customize labels with the <code>labels</code> prop. When no <code>onJoin</code> or <code>href</code> is provided, empty slots show the <code>empty</code> label instead of a join button:</p>
+      <CodeBlock language="tsx">{`<PlayerSlotView
+  slot={slot}
+  labels={{ empty: "Waiting...", join: "Enter", ready: "Joined" }}
+/>`}</CodeBlock>
 
       <h3>{"<RoomQRCode>"}</h3>
       <p>Renders a QR code that links to the room URL.</p>
@@ -191,7 +207,13 @@ interface RoomDerivedState {
   closeButtonClassName="modal-close"
   linkClassName="modal-link"
 />`}</CodeBlock>
-      <p>Style the backdrop via the <code>::backdrop</code> pseudo-element on your dialog class.</p>
+      <p>Style the backdrop via the <code>::backdrop</code> pseudo-element on your dialog class. Customize text via <code>labels</code>:</p>
+      <CodeBlock language="tsx">{`<RoomInfoModal
+  roomState={roomState}
+  open={showInfo}
+  onClose={() => setShowInfo(false)}
+  labels={{ roomHeading: "Sala:", joinLink: "Entrar" }}
+/>`}</CodeBlock>
 
       <h2>Utils</h2>
 
