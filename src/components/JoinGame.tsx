@@ -2,10 +2,14 @@ import React, { useState } from "react";
 
 export interface JoinGameProps {
   onJoin: (roomCode: string) => void;
+  renderError?: () => React.ReactNode;
   className?: string;
+  formClassName?: string;
+  inputClassName?: string;
+  buttonClassName?: string;
 }
 
-export function JoinGame({ onJoin, className }: JoinGameProps) {
+export function JoinGame({ onJoin, renderError, className, formClassName, inputClassName, buttonClassName }: JoinGameProps) {
   const [code, setCode] = useState("");
 
   const canSubmit = code.trim().length > 0;
@@ -18,51 +22,30 @@ export function JoinGame({ onJoin, className }: JoinGameProps) {
   }
 
   return (
-    <div className={className} style={{ padding: 24 }}>
-      <h2 style={{ marginBottom: 16 }}>Join Game</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label
-            htmlFor="room-code"
-            style={{
-              display: "block",
-              marginBottom: 4,
-              fontSize: 14,
-            }}
-          >
-            Room code
-          </label>
-          <input
-            id="room-code"
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            placeholder="Enter room code"
-            aria-required="true"
-            maxLength={10}
-            style={{
-              padding: "10px 12px",
-              fontSize: 16,
-              textTransform: "uppercase",
-              letterSpacing: 2,
-            }}
-          />
-        </div>
+    <div className={className}>
+      <form className={formClassName} onSubmit={handleSubmit}>
+        <label htmlFor="room-code">Room code</label>
+        <input
+          id="room-code"
+          className={inputClassName}
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          placeholder="Enter room code"
+          aria-required="true"
+          maxLength={10}
+        />
 
         <button
+          className={buttonClassName}
           type="submit"
           disabled={!canSubmit}
-          style={{
-            padding: "10px 24px",
-            fontSize: 16,
-            cursor: canSubmit ? "pointer" : "not-allowed",
-            opacity: canSubmit ? 1 : 0.5,
-          }}
         >
           Join
         </button>
       </form>
+
+      {renderError?.()}
     </div>
   );
 }

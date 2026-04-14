@@ -195,10 +195,16 @@ Renders a QR code that links to the room URL.
 
 #### `<JoinGame>`
 
-A form where players enter a room code to join.
+A form where players enter a room code to join. Headless — style via className props.
 
 ```tsx
-<JoinGame onJoin={(roomCode) => {}} />
+<JoinGame
+  onJoin={(roomCode) => { /* validate & navigate */ }}
+  renderError={() => error ? <div className="error">{error}</div> : null}
+  formClassName="join-form"
+  inputClassName="input"
+  buttonClassName="btn"
+/>
 ```
 
 #### `<RoomInfoModal>`
