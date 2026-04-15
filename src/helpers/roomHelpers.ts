@@ -141,3 +141,30 @@ export function startGame<T>(state: RoomState<T>): RoomState<T> {
 
   return { ...state, status: "started" };
 }
+
+/**
+ * Deserializes a raw object (e.g., from a Firebase snapshot) into a proper RoomState.
+ * Firebase stores arrays as objects with numeric keys — this function normalizes
+ * the `players` field back into a real array.
+ * @param raw - A plain object with roomId, status, players, and config fields.
+ * @returns A valid RoomState with a properly typed players array.
+ */
+export function deserializeRoom<T = unknown>(raw: Record<string, unknown>): RoomState<T> {
+  const players = raw.players;
+  let parsedPlayers: PlayerSlot<T>[];
+
+  if (Array.isArray(players)) {
+    parsedPlayers = players;
+  } else if (players && typeof players === "object") {
+    parsedPlayers = Object.values(players as Record<string, PlayerSlot<T>>);
+  } else {
+    parsedPlayers = [];
+  }
+
+  return {
+    roomId: raw.roomId as string,
+    status: raw.status as RoomState<T>["status"],
+    players: parsedPlayers,
+    config: raw.config as RoomConfig,
+  };
+}

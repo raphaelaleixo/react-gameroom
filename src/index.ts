@@ -16,6 +16,7 @@ export {
   findFirstEmptySlot,
   resetPlayer,
   startGame,
+  deserializeRoom,
 } from "./helpers/roomHelpers";
 
 // Hooks
@@ -37,7 +38,7 @@ export { RoomQRCode } from "./components/RoomQRCode";
 export type { RoomQRCodeProps } from "./components/RoomQRCode";
 
 export { JoinGame } from "./components/JoinGame";
-export type { JoinGameProps } from "./components/JoinGame";
+export type { JoinGameProps, JoinGameLabels } from "./components/JoinGame";
 
 export { RoomInfoModal } from "./components/RoomInfoModal";
 export type { RoomInfoModalProps, RoomInfoModalLabels } from "./components/RoomInfoModal";

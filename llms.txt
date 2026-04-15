@@ -73,6 +73,10 @@ startGame(state): RoomState
   - If requireFull: readyCount === config.maxPlayers
   No-op if conditions not met or already started.
 
+deserializeRoom(raw: Record<string, unknown>): RoomState
+  Converts a raw object (e.g., Firebase snapshot) into a proper RoomState.
+  Normalizes players from object-with-numeric-keys back to a real array.
+
 ## Hook
 
 useRoomState(roomState: RoomState): RoomDerivedState

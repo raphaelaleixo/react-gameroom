@@ -87,6 +87,10 @@ interface RoomDerivedState {
             <td><code>startGame(state)</code></td>
             <td>Transitions room to <code>started</code> if readiness conditions are met.</td>
           </tr>
+          <tr>
+            <td><code>deserializeRoom(raw)</code></td>
+            <td>Converts a raw object (e.g., Firebase snapshot) into a proper <code>RoomState</code>. Normalizes the <code>players</code> field from an object with numeric keys back to a real array.</td>
+          </tr>
         </tbody>
       </table>
 
@@ -195,6 +199,11 @@ interface RoomDerivedState {
   labelClassName="label"
   inputClassName="input"
   buttonClassName="btn"
+/>`}</CodeBlock>
+      <p>Customize text via the <code>labels</code> prop:</p>
+      <CodeBlock language="tsx">{`<JoinGame
+  onJoin={async (roomCode) => {}}
+  labels={{ label: "Código da sala", placeholder: "Digite o código", submit: "Entrar", submitting: "Entrando…" }}
 />`}</CodeBlock>
 
       <h3>{"<RoomInfoModal>"}</h3>
