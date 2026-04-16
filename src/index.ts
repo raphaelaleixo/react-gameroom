@@ -37,6 +37,9 @@ export type { PlayerScreenProps, PlayerScreenLabels } from "./components/PlayerS
 export { RoomQRCode } from "./components/RoomQRCode";
 export type { RoomQRCodeProps } from "./components/RoomQRCode";
 
+export { StartGameButton } from "./components/StartGameButton";
+export type { StartGameButtonProps, StartGameButtonLabels } from "./components/StartGameButton";
+
 export { JoinGame } from "./components/JoinGame";
 export type { JoinGameProps, JoinGameLabels } from "./components/JoinGame";
 

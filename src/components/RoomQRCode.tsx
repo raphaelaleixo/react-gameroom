@@ -3,7 +3,9 @@ import { QRCodeSVG } from "qrcode.react";
 import { buildRoomUrl } from "../utils/roomUtils";
 
 export interface RoomQRCodeProps {
+  /** Room identifier, used to generate the default QR URL via `buildRoomUrl`. */
   roomId: string;
+  /** Custom URL to encode. When provided, overrides the URL that would be built from `roomId`. */
   url?: string;
   size?: number;
   className?: string;

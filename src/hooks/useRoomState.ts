@@ -1,16 +1,22 @@
 import { useMemo } from "react";
-import type { RoomState } from "../types/room";
+import type { PlayerSlot, RoomState } from "../types/room";
 
 /** Computed values derived from a RoomState, returned by `useRoomState`. */
-export interface RoomDerivedState {
+export interface RoomDerivedState<T = unknown> {
   /** True if room status is "lobby". */
   isLobby: boolean;
   /** True if room status is "started". */
   isStarted: boolean;
+  /** Players with "ready" status. */
+  readyPlayers: PlayerSlot<T>[];
   /** Number of players with "ready" status. */
   readyCount: number;
+  /** Slots with "empty" status. */
+  emptySlots: PlayerSlot<T>[];
   /** Number of slots with "empty" status. */
   emptyCount: number;
+  /** Non-empty slots (joining + ready). */
+  activePlayers: PlayerSlot<T>[];
   /** True if the game can be started (lobby + enough ready players). */
   canStart: boolean;
   /** Number of non-empty slots (joining + ready). */
@@ -28,12 +34,17 @@ export interface RoomDerivedState {
  * const { canStart, readyCount } = useRoomState(roomState);
  * <button disabled={!canStart}>Start ({readyCount} ready)</button>
  */
-export function useRoomState(roomState: RoomState): RoomDerivedState {
+export function useRoomState<T = unknown>(roomState: RoomState<T>): RoomDerivedState<T> {
   return useMemo(() => {
     const isLobby = roomState.status === "lobby";
     const isStarted = roomState.status === "started";
-    const readyCount = roomState.players.filter((p) => p.status === "ready").length;
-    const emptyCount = roomState.players.filter((p) => p.status === "empty").length;
+    const readyPlayers = roomState.players.filter((p) => p.status === "ready");
+    const emptySlots = roomState.players.filter((p) => p.status === "empty");
+    const activePlayers = roomState.players.filter((p) => p.status !== "empty");
+
+    const readyCount = readyPlayers.length;
+    const emptyCount = emptySlots.length;
+    const playerCount = activePlayers.length;
 
     const meetsMin = readyCount >= roomState.config.minPlayers;
     const meetsFull = roomState.config.requireFull
@@ -41,13 +52,11 @@ export function useRoomState(roomState: RoomState): RoomDerivedState {
       : true;
     const canStart = isLobby && meetsMin && meetsFull;
 
-    const playerCount = roomState.players.filter((p) => p.status !== "empty").length;
-
     const playerNames: Record<number, string> = {};
     for (const p of roomState.players) {
       if (p.name) playerNames[p.id] = p.name;
     }
 
-    return { isLobby, isStarted, readyCount, emptyCount, canStart, playerCount, playerNames };
+    return { isLobby, isStarted, readyPlayers, readyCount, emptySlots, emptyCount, activePlayers, canStart, playerCount, playerNames };
   }, [roomState]);
 }

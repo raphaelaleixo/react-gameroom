@@ -1,10 +1,19 @@
 {
   "name": "react-gameroom",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A reusable multiplayer lobby system for casual/local multiplayer games",
   "author": "Raphael Avellar",
   "license": "MIT",
-  "keywords": ["react", "multiplayer", "lobby", "gameroom", "game", "qrcode", "room", "player"],
+  "keywords": [
+    "react",
+    "multiplayer",
+    "lobby",
+    "gameroom",
+    "game",
+    "qrcode",
+    "room",
+    "player"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/raphaelaleixo/react-gameroom.git"
@@ -23,7 +32,9 @@
       "require": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",

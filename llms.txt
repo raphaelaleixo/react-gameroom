@@ -33,13 +33,16 @@ interface RoomState<T = unknown> {
   config: RoomConfig
 }
 
-interface RoomDerivedState {
+interface RoomDerivedState<T = unknown> {
   isLobby: boolean
   isStarted: boolean
+  readyPlayers: PlayerSlot<T>[]       // slots with "ready" status
   readyCount: number
+  emptySlots: PlayerSlot<T>[]         // slots with "empty" status
   emptyCount: number
+  activePlayers: PlayerSlot<T>[]      // non-empty slots (joining + ready)
   canStart: boolean
-  playerCount: number              // non-empty slots
+  playerCount: number                 // activePlayers.length
   playerNames: Record<number, string> // id → name for named players
 }
 
@@ -80,8 +83,10 @@ deserializeRoom(raw: Record<string, unknown>): RoomState
 ## Hook
 
 useRoomState(roomState: RoomState): RoomDerivedState
-  Memoized React hook. Returns computed fields: canStart, readyCount,
-  emptyCount, playerCount, playerNames, isLobby, isStarted.
+  Memoized React hook. Returns computed fields: canStart, readyPlayers,
+  readyCount, emptySlots, emptyCount, activePlayers, playerCount,
+  playerNames, isLobby, isStarted. Array fields provide the filtered
+  slots directly, eliminating the need to re-derive them from counts.
 
 ## Utils
 
@@ -127,7 +132,12 @@ room = startGame(room);
 
 ## Notes
 
-Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, RoomInfoModal) accept
+StartGameButton: a button that starts the game when lobby readiness conditions
+are met. Calls startGame internally and passes the transitioned RoomState to
+onStart. Automatically disables when canStart is false. Accepts labels prop
+for i18n ({ start?: string }).
+
+Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, StartGameButton, RoomInfoModal) accept
 an optional `labels` prop to customize all hardcoded UI strings (button text, status
 labels, headings). This enables i18n and alternative lobby flows (e.g., view-only
 slots in first-come-first-served mode show "Empty" instead of a "Join" button when

@@ -17,7 +17,7 @@ Peer dependencies: `react >= 17.0.0` and `react-dom >= 17.0.0`.
 ```tsx
 import {
   createInitialRoom, joinPlayer, startGame,
-  useRoomState, PlayerSlotsGrid, RoomQRCode, buildPlayerUrl,
+  useRoomState, PlayerSlotsGrid, RoomQRCode, StartGameButton, buildPlayerUrl,
 } from "react-gameroom";
 
 // 1. Create a room
@@ -37,18 +37,16 @@ const { canStart, readyCount } = useRoomState(room);
   players={room.players}
   buildSlotHref={(id) => buildPlayerUrl(room.roomId, id)}
 />
-<button onClick={() => startGame(room)} disabled={!canStart}>
-  Start Game ({readyCount} ready)
-</button>
+<StartGameButton roomState={room} onStart={updateRoom} />
 ```
 
 ## What's Included
 
 | Category | Exports |
 |----------|---------|
-| **Components** | `PlayerSlotsGrid`, `PlayerSlotView`, `PlayerScreen`, `RoomQRCode`, `JoinGame`, `RoomInfoModal` |
+| **Components** | `PlayerSlotsGrid`, `PlayerSlotView`, `PlayerScreen`, `RoomQRCode`, `JoinGame`, `RoomInfoModal`, `StartGameButton` |
 | **Helpers** | `createInitialRoom`, `joinPlayer`, `startGame`, `resetPlayer`, `setPlayerJoining`, `setPlayerReady`, `findFirstEmptySlot`, `deserializeRoom` |
-| **Hook** | `useRoomState` — derived state with `canStart`, `readyCount`, `playerCount`, `playerNames` |
+| **Hook** | `useRoomState` — derived state with `canStart`, `readyCount`, `readyPlayers`, `emptySlots`, `activePlayers`, `playerNames` |
 | **Utils** | `generateRoomId`, `buildRoomUrl`, `buildPlayerUrl`, `buildJoinUrl`, `buildRejoinUrl`, `parseRoomFromUrl` |
 
 ## Key Features

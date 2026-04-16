@@ -40,13 +40,16 @@ interface RoomState<T = unknown> {
   config: RoomConfig;
 }
 
-interface RoomDerivedState {
+interface RoomDerivedState<T = unknown> {
   isLobby: boolean;
   isStarted: boolean;
+  readyPlayers: PlayerSlot<T>[];       // slots with "ready" status
   readyCount: number;
+  emptySlots: PlayerSlot<T>[];         // slots with "empty" status
   emptyCount: number;
+  activePlayers: PlayerSlot<T>[];      // non-empty slots (joining + ready)
   canStart: boolean;
-  playerCount: number;    // non-empty slots (joining + ready)
+  playerCount: number;                 // activePlayers.length
   playerNames: Record<number, string>; // only named players
 }`}</CodeBlock>
 
@@ -99,8 +102,11 @@ interface RoomDerivedState {
       <h3>useRoomState(roomState): RoomDerivedState</h3>
       <p>
         A memoized hook that computes derived values from room state. Returns{" "}
-        <code>canStart</code>, <code>readyCount</code>, <code>emptyCount</code>,{" "}
+        <code>canStart</code>, <code>readyPlayers</code>, <code>readyCount</code>,{" "}
+        <code>emptySlots</code>, <code>emptyCount</code>, <code>activePlayers</code>,{" "}
         <code>playerCount</code>, <code>playerNames</code>, <code>isLobby</code>, and <code>isStarted</code>.
+        The array fields (<code>readyPlayers</code>, <code>emptySlots</code>, <code>activePlayers</code>)
+        provide the filtered slots directly, eliminating the need to re-derive them from counts.
       </p>
 
       <h2>Components</h2>
@@ -204,6 +210,24 @@ interface RoomDerivedState {
       <CodeBlock language="tsx">{`<JoinGame
   onJoin={async (roomCode) => {}}
   labels={{ label: "Código da sala", placeholder: "Digite o código", submit: "Entrar", submitting: "Entrando…" }}
+/>`}</CodeBlock>
+
+      <h3>{"<StartGameButton>"}</h3>
+      <p>
+        A button that starts the game when lobby readiness conditions are met.
+        Calls <code>startGame</code> internally and passes the transitioned <code>RoomState</code> to <code>onStart</code>.
+        Automatically disables when <code>canStart</code> is false.
+      </p>
+      <CodeBlock language="tsx">{`<StartGameButton
+  roomState={roomState}
+  onStart={updateRoom}
+  className="btn"
+/>`}</CodeBlock>
+      <p>Customize text via the <code>labels</code> prop:</p>
+      <CodeBlock language="tsx">{`<StartGameButton
+  roomState={roomState}
+  onStart={updateRoom}
+  labels={{ start: "Begin Round" }}
 />`}</CodeBlock>
 
       <h3>{"<RoomInfoModal>"}</h3>

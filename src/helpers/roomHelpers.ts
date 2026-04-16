@@ -109,6 +109,16 @@ export function resetPlayer<T>(state: RoomState<T>, playerId: number): RoomState
 }
 
 /**
+ * Finds the first player slot with "empty" status.
+ * Useful for first-come-first-served lobbies where players are auto-assigned seats.
+ * @param players - The players array from a RoomState.
+ * @returns The first empty PlayerSlot, or null if all slots are occupied.
+ */
+export function findFirstEmptySlot<T>(players: PlayerSlot<T>[]): PlayerSlot<T> | null {
+  return players.find((p) => p.status === "empty") ?? null;
+}
+
+/**
  * Transitions the room from "lobby" to "started" if readiness conditions are met.
  * Requires at least `config.minPlayers` ready. If `config.requireFull` is true,
  * all slots must be ready. No-op if conditions are not met or room is already started.
@@ -121,16 +131,6 @@ export function resetPlayer<T>(state: RoomState<T>, playerId: number): RoomState
  * room = startGame(room);
  * // room.status === "started"
  */
-/**
- * Finds the first player slot with "empty" status.
- * Useful for first-come-first-served lobbies where players are auto-assigned seats.
- * @param players - The players array from a RoomState.
- * @returns The first empty PlayerSlot, or null if all slots are occupied.
- */
-export function findFirstEmptySlot<T>(players: PlayerSlot<T>[]): PlayerSlot<T> | null {
-  return players.find((p) => p.status === "empty") ?? null;
-}
-
 export function startGame<T>(state: RoomState<T>): RoomState<T> {
   if (state.status !== "lobby") return state;
 

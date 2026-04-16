@@ -2,11 +2,11 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ref, onValue, set } from "firebase/database";
 import {
-  startGame,
   useRoomState,
   PlayerSlotsGrid,
   RoomQRCode,
   RoomInfoModal,
+  StartGameButton,
   buildRoomUrl,
   buildPlayerUrl,
 } from "react-gameroom";
@@ -74,7 +74,7 @@ export function LobbyPage() {
     }
   }, [choices, roomId, gameResult]);
 
-  const { canStart, readyCount, playerNames } = useRoomState(roomState ?? {
+  const { readyCount, playerNames } = useRoomState(roomState ?? {
     roomId: "", status: "lobby", players: [], config: { minPlayers: 0, maxPlayers: 0, requireFull: false },
   });
 
@@ -154,15 +154,11 @@ export function LobbyPage() {
         buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id, "/react-gameroom/play")}
       />
 
-      <button
-        type="button"
+      <StartGameButton
+        roomState={roomState}
+        onStart={updateRoom}
         className="btn"
-        onClick={() => updateRoom(startGame(roomState))}
-        disabled={!canStart}
-        style={{ marginTop: 16 }}
-      >
-        Start Game
-      </button>
+      />
     </div>
   );
 }
