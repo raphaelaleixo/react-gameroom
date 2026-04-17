@@ -21,7 +21,7 @@ export function DocsHome() {
 
       <CodeBlock language="tsx">{`import {
   createInitialRoom, joinPlayer, startGame,
-  useRoomState, PlayerSlotsGrid, RoomQRCode, buildPlayerUrl,
+  useRoomState, PlayerSlotsGrid, RoomQRCode, StartGameButton, buildPlayerUrl,
 } from "react-gameroom";
 
 // 1. Create a room
@@ -41,9 +41,7 @@ const { canStart, readyCount } = useRoomState(room);
   players={room.players}
   buildSlotHref={(id) => buildPlayerUrl(room.roomId, id)}
 />
-<button onClick={() => startGame(room)} disabled={!canStart}>
-  Start Game ({readyCount} ready)
-</button>`}</CodeBlock>
+<StartGameButton roomState={room} onStart={updateRoom} />`}</CodeBlock>
 
       <h2>What's Included</h2>
 
@@ -57,7 +55,7 @@ const { canStart, readyCount } = useRoomState(room);
         <tbody>
           <tr>
             <td><strong>Components</strong></td>
-            <td><code>PlayerSlotsGrid</code>, <code>PlayerSlotView</code>, <code>PlayerScreen</code>, <code>RoomQRCode</code>, <code>JoinGame</code>, <code>RoomInfoModal</code></td>
+            <td><code>PlayerSlotsGrid</code>, <code>PlayerSlotView</code>, <code>PlayerScreen</code>, <code>RoomQRCode</code>, <code>JoinGame</code>, <code>RoomInfoModal</code>, <code>StartGameButton</code></td>
           </tr>
           <tr>
             <td><strong>Helpers</strong></td>
@@ -65,7 +63,7 @@ const { canStart, readyCount } = useRoomState(room);
           </tr>
           <tr>
             <td><strong>Hook</strong></td>
-            <td><code>useRoomState</code> — derived state with <code>canStart</code>, <code>readyCount</code>, <code>playerNames</code></td>
+            <td><code>useRoomState</code> — derived state with <code>canStart</code>, <code>readyCount</code>, <code>readyPlayers</code>, <code>emptySlots</code>, <code>activePlayers</code>, <code>playerNames</code></td>
           </tr>
           <tr>
             <td><strong>Utils</strong></td>

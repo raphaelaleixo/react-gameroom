@@ -24,18 +24,16 @@ navigate(\`/room/\${room.roomId}\`);`}</CodeBlock>
         Compose <code>PlayerSlotsGrid</code>, <code>RoomQRCode</code>, and <code>useRoomState</code> into
         your lobby page. Players join by scanning the QR code or entering the room code.
       </p>
-      <CodeBlock language="tsx">{`import { useRoomState, PlayerSlotsGrid, RoomQRCode, startGame, buildPlayerUrl } from "react-gameroom";
+      <CodeBlock language="tsx">{`import { useRoomState, PlayerSlotsGrid, RoomQRCode, StartGameButton, buildPlayerUrl } from "react-gameroom";
 
-const { canStart, readyCount } = useRoomState(roomState);
+const { readyCount } = useRoomState(roomState);
 
 <RoomQRCode roomId={roomState.roomId} />
 <PlayerSlotsGrid
   players={roomState.players}
   buildSlotHref={(id) => buildPlayerUrl(roomState.roomId, id)}
 />
-<button onClick={() => updateRoom(startGame(roomState))} disabled={!canStart}>
-  Start ({readyCount} ready)
-</button>`}</CodeBlock>
+<StartGameButton roomState={roomState} onStart={updateRoom} />`}</CodeBlock>
 
       <h2>3. Build the player screen</h2>
       <p>
