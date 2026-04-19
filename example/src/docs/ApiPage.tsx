@@ -118,30 +118,35 @@ interface RoomDerivedState<T = unknown> {
 
       <h3>{"<PlayerScreen>"}</h3>
       <p>
-        The individual player view (typically shown on a mobile device). Shows the join/ready flow
-        during lobby, and a "Game Started" message once the game begins. Supports render props to
-        replace default content for each state:
+        The individual player view (typically shown on a mobile device). Renders a header and
+        a phase-specific body (lobby joining/ready or "Game Started"). Supports render props to
+        replace default content for the header and each phase:
       </p>
       <CodeBlock language="tsx">{`<PlayerScreen
   roomState={roomState}
   playerId={1}
   className="my-player"
+  renderHeader={(state, slot) => <AppHeader room={state.roomId} player={slot.name} />}
   renderStarted={() => <MyGameUI />}
   renderEmpty={() => <MyJoinForm />}
   renderReady={() => <MyReadyMessage />}
 />`}</CodeBlock>
-      <p>When render props are omitted, <code>PlayerScreen</code> renders default UI with <code>onJoin</code>/<code>onReady</code> button callbacks:</p>
+      <p>
+        Empty slots are treated as an error state — route players through a dedicated join
+        page that writes the <code>joining</code> status before redirecting to the player URL.
+        Supply <code>renderEmpty</code> for custom recovery UX.
+      </p>
+      <p>When render props are omitted, <code>PlayerScreen</code> renders a default heading plus a <code>Ready Up</code> button wired to <code>onReady</code>:</p>
       <CodeBlock language="tsx">{`<PlayerScreen
   roomState={roomState}
   playerId={1}
-  onJoin={() => {}}
   onReady={() => {}}
 />`}</CodeBlock>
       <p>Customize default UI text via the <code>labels</code> prop:</p>
       <CodeBlock language="tsx">{`<PlayerScreen
   roomState={roomState}
   playerId={1}
-  labels={{ joinGame: "Entrar", readyUp: "Pronto", readyWaiting: "Aguardando..." }}
+  labels={{ readyUp: "Pronto", readyWaiting: "Aguardando...", gameStarted: "Começou!" }}
 />`}</CodeBlock>
 
       <h3>{"<PlayerSlotsGrid>"}</h3>
