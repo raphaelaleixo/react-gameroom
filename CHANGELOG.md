@@ -12,6 +12,51 @@
 ### Changed
 - `PlayerScreen`: the default heading now uses `slot.name ?? "Player N"` uniformly across all phases (previously only the `started` branch used `slot.name`).
 
+## 0.7.0
+
+### Added
+- `StartGameButton` component — internalizes `startGame` + `canStart` logic to eliminate boilerplate.
+- `useRoomState` now exposes `readyPlayers`, `emptySlots`, and `activePlayers` arrays alongside the existing counts.
+
+### Changed
+- `RoomQRCode` props documented; `findFirstEmptySlot` / `startGame` JSDoc reordered.
+
+## 0.6.0
+
+### Added
+- `deserializeRoom` helper — normalizes raw objects (e.g., Firebase snapshots) into proper `RoomState` with real arrays.
+- `JoinGame`: `labels` prop for full i18n consistency with other components.
+
+## 0.5.0
+
+### Breaking
+- `PlayerSlotView` now renders as `<a>` whenever `href` is set, regardless of slot status (previously skipped `ready` slots).
+
+### Added
+- `PlayerSlotsGrid`: `filterEmpty` prop — hides empty slots (useful for rejoin grids).
+
+## 0.4.0
+
+### Added
+- `RoomInfoModal` is now status-aware: lobby uses `buildJoinUrl` / "Join", started uses `buildRejoinUrl` / "Rejoin".
+- `buildRejoinUrl` util.
+- `parseRoomFromUrl`: `isRejoin` flag on parsed results.
+
+## 0.3.0
+
+### Added
+- `labels` prop on `PlayerSlotView`, `PlayerSlotsGrid`, `PlayerScreen`, and `RoomInfoModal` — override all hardcoded UI strings.
+
+### Changed
+- Empty slots without `onJoin` / `href` now show the "Empty" label instead of a non-functional Join button.
+
+## 0.2.0
+
+### Added
+- `findFirstEmptySlot` helper.
+- `buildJoinUrl` util.
+- `parseRoomFromUrl`: `isJoin` flag on parsed results.
+
 ## 0.1.0
 
 Initial release.
