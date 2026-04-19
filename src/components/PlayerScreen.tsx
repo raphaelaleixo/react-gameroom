@@ -1,12 +1,12 @@
 import React from "react";
-import type { RoomState } from "../types/room";
+import type { PlayerSlot, RoomState } from "../types/room";
 
 /**
  * Customizable labels for PlayerScreen default UI text.
  * All fields are optional — defaults are used for any omitted field.
  */
 export interface PlayerScreenLabels {
-  /** Error shown when playerId doesn't match any slot (default: "Invalid player slot"). */
+  /** Error shown when playerId doesn't match any slot or the slot is empty (default: "Invalid player slot"). */
   invalidSlot?: string;
   /** Heading prefix before roomId (default: "Room:"). */
   roomHeading?: string;
@@ -14,8 +14,6 @@ export interface PlayerScreenLabels {
   playerHeading?: string;
   /** Status text when game has started (default: "Game Started!"). */
   gameStarted?: string;
-  /** Join button text (default: "Join Game"). */
-  joinGame?: string;
   /** Status text while joining (default: "Joining..."). */
   joining?: string;
   /** Ready-up button text (default: "Ready Up"). */
@@ -29,7 +27,6 @@ const defaultLabels: Required<PlayerScreenLabels> = {
   roomHeading: "Room:",
   playerHeading: "Player",
   gameStarted: "Game Started!",
-  joinGame: "Join Game",
   joining: "Joining...",
   readyUp: "Ready Up",
   readyWaiting: "Ready! Waiting for others...",
@@ -38,8 +35,8 @@ const defaultLabels: Required<PlayerScreenLabels> = {
 export interface PlayerScreenProps {
   roomState: RoomState;
   playerId: number;
-  onJoin?: () => void;
   onReady?: () => void;
+  renderHeader?: (roomState: RoomState, slot: PlayerSlot) => React.ReactNode;
   renderStarted?: () => React.ReactNode;
   renderEmpty?: () => React.ReactNode;
   renderReady?: () => React.ReactNode;
@@ -51,8 +48,8 @@ export interface PlayerScreenProps {
 export function PlayerScreen({
   roomState,
   playerId,
-  onJoin,
   onReady,
+  renderHeader,
   renderStarted,
   renderEmpty,
   renderReady,
@@ -66,55 +63,41 @@ export function PlayerScreen({
     return <div className={className} role="alert">{labels.invalidSlot}</div>;
   }
 
+  const header = renderHeader ? renderHeader(roomState, slot) : (
+    <>
+      <h2>{labels.roomHeading} {roomState.roomId}</h2>
+      <h3>{slot.name || `${labels.playerHeading} ${playerId}`}</h3>
+    </>
+  );
+
+  let body: React.ReactNode;
   if (roomState.status === "started") {
-    return (
-      <div className={className}>
-        {renderStarted ? renderStarted() : (
-          <>
-            <h2>{labels.roomHeading} {roomState.roomId}</h2>
-            <h3>{slot.name || `${labels.playerHeading} ${playerId}`}</h3>
-            <div role="status" aria-live="polite">{labels.gameStarted}</div>
-          </>
-        )}
+    body = renderStarted ? renderStarted() : (
+      <div role="status" aria-live="polite">{labels.gameStarted}</div>
+    );
+  } else if (slot.status === "empty") {
+    body = renderEmpty ? renderEmpty() : (
+      <div role="alert">{labels.invalidSlot}</div>
+    );
+  } else if (slot.status === "joining") {
+    body = (
+      <div>
+        <div role="status" aria-live="polite">{labels.joining}</div>
+        <button type="button" onClick={onReady}>
+          {labels.readyUp}
+        </button>
       </div>
+    );
+  } else {
+    body = renderReady ? renderReady() : (
+      <div role="status" aria-live="polite">{labels.readyWaiting}</div>
     );
   }
 
-  const hasCustomLobby = renderEmpty != null || renderReady != null;
-
   return (
     <div className={className}>
-      {!hasCustomLobby && (
-        <>
-          <h2>{labels.roomHeading} {roomState.roomId}</h2>
-          <h3>{labels.playerHeading} {playerId}</h3>
-        </>
-      )}
-
-      {slot.status === "empty" && (
-        renderEmpty ? renderEmpty() : (
-          <button type="button" onClick={onJoin}>
-            {labels.joinGame}
-          </button>
-        )
-      )}
-
-      {slot.status === "joining" && (
-        <div>
-          <div role="status" aria-live="polite">{labels.joining}</div>
-          <button type="button" onClick={onReady}>
-            {labels.readyUp}
-          </button>
-        </div>
-      )}
-
-      {slot.status === "ready" && (
-        renderReady ? renderReady() : (
-          <div role="status" aria-live="polite">
-            {labels.readyWaiting}
-          </div>
-        )
-      )}
+      {header}
+      {body}
     </div>
   );
 }
