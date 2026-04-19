@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.0
+
+### Breaking
+- `PlayerScreen`: removed `onJoin` prop and the default "Join Game" button. Empty slots now render `labels.invalidSlot` (or `renderEmpty()` when provided). Route players through a dedicated join page that writes the `joining` status before redirecting to the player URL.
+- `PlayerScreen`: removed `labels.joinGame` from `PlayerScreenLabels`.
+
+### Added
+- `PlayerScreen`: `renderHeader?: (roomState, slot) => ReactNode` render-prop — renders above every phase body, replacing the default `Room / Player` heading when provided. Eliminates header duplication between `renderStarted` and `renderReady`.
+
+### Changed
+- `PlayerScreen`: the default heading now uses `slot.name ?? "Player N"` uniformly across all phases (previously only the `started` branch used `slot.name`).
+
 ## 0.1.0
 
 Initial release.
