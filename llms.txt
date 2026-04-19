@@ -111,6 +111,13 @@ parseRoomFromUrl(url): { roomId: string; playerId?: number; isJoin?: boolean; is
   Parses /room/{id}, /room/{id}/player/{n}, /room/{id}/player, and /room/{id}/players.
   Returns isJoin: true for join URL, isRejoin: true for rejoin grid URL.
 
+isLikelyMobileHost(): boolean
+  Returns true when the environment looks like a phone or small tablet: the primary
+  pointer is coarse AND the viewport is <= 900px wide. Uses matchMedia, SSR-safe
+  (returns false when window/matchMedia are unavailable). Snapshot, not reactive —
+  intended as a one-shot gate for "become the host" flows. Pair with
+  HostDeviceWarningModal.
+
 ## Example
 
 import { createInitialRoom, joinPlayer, startGame, useRoomState } from "react-gameroom";
@@ -151,3 +158,11 @@ RoomInfoModal is status-aware: during lobby, QR code points to buildJoinUrl and
 links say "Join". When game is started, QR points to buildRejoinUrl and links say
 "Rejoin". Pass basePath prop to set URL prefix. Labels are customizable via
 rejoinLink/rejoinLinkAria.
+
+HostDeviceWarningModal is a confirmation dialog for gating "become the host" flows
+on phones and small tablets, where the big-screen layout is cramped. Uses native
+<dialog>.showModal() for focus trapping, Escape to close, and a backdrop. Both
+Escape and backdrop clicks trigger onCancel. Props: open, onConfirm, onCancel,
+className, confirmButtonClassName, cancelButtonClassName, labels (title, body,
+confirmLabel, cancelLabel). Pair with isLikelyMobileHost() to decide whether to
+show the modal before entering host mode.

@@ -262,6 +262,44 @@ interface RoomDerivedState<T = unknown> {
   labels={{ roomHeading: "Sala:", joinLink: "Entrar" }}
 />`}</CodeBlock>
 
+      <h3>{"<HostDeviceWarningModal>"}</h3>
+      <p>
+        A <code>&lt;dialog&gt;</code>-based confirmation modal for gating the "become the host" flow
+        on phones and small tablets. Native <code>showModal()</code> gives focus trapping, Escape to
+        close, and a backdrop. Escape and backdrop clicks trigger <code>onCancel</code>. Pair it with
+        the <code>isLikelyMobileHost</code> util to decide whether to show it.
+      </p>
+      <CodeBlock language="tsx">{`const [showWarning, setShowWarning] = useState(false);
+
+function handleBecomeHost() {
+  if (isLikelyMobileHost()) {
+    setShowWarning(true);
+    return;
+  }
+  becomeHost();
+}
+
+<HostDeviceWarningModal
+  open={showWarning}
+  onConfirm={() => { setShowWarning(false); becomeHost(); }}
+  onCancel={() => setShowWarning(false)}
+  className="modal-dialog"
+  confirmButtonClassName="btn-primary"
+  cancelButtonClassName="btn-secondary"
+/>`}</CodeBlock>
+      <p>Customize text via <code>labels</code>:</p>
+      <CodeBlock language="tsx">{`<HostDeviceWarningModal
+  open={showWarning}
+  onConfirm={becomeHost}
+  onCancel={() => setShowWarning(false)}
+  labels={{
+    title: "Tela grande recomendada",
+    body: "Esta experiência foi feita para TV ou notebook.",
+    confirmLabel: "Continuar mesmo assim",
+    cancelLabel: "Cancelar",
+  }}
+/>`}</CodeBlock>
+
       <h2>Utils</h2>
 
       <table>
@@ -293,12 +331,17 @@ interface RoomDerivedState<T = unknown> {
             <td><code>parseRoomFromUrl(url)</code></td>
             <td>Parses a URL and returns <code>{"{ roomId, playerId?, isJoin?, isRejoin? }"}</code> or <code>null</code>. Returns <code>isJoin: true</code> for <code>/room/{"{roomId}"}/player</code>, <code>isRejoin: true</code> for <code>/room/{"{roomId}"}/players</code>.</td>
           </tr>
+          <tr>
+            <td><code>isLikelyMobileHost()</code></td>
+            <td>Returns <code>true</code> when the environment looks like a phone or small tablet (coarse pointer AND viewport ≤ 900px). Uses <code>matchMedia</code>, SSR-safe (returns <code>false</code> when <code>window</code> is unavailable). Returns a snapshot — not reactive to viewport changes. Pair with <code>HostDeviceWarningModal</code> to gate the "become host" flow.</td>
+          </tr>
         </tbody>
       </table>
 
       <h2>Accessibility</h2>
       <ul>
         <li><strong>RoomInfoModal</strong> — native <code>&lt;dialog&gt;</code> with <code>showModal()</code>, built-in <code>aria-modal</code>, focus trapping, Escape to close</li>
+        <li><strong>HostDeviceWarningModal</strong> — native <code>&lt;dialog&gt;</code> with <code>showModal()</code>, <code>aria-labelledby</code>, Escape and backdrop click trigger <code>onCancel</code></li>
         <li><strong>RoomQRCode</strong> — <code>role="img"</code> with descriptive <code>aria-label</code></li>
         <li><strong>JoinGame</strong> — visible <code>&lt;label&gt;</code> and <code>aria-required</code></li>
         <li><strong>PlayerScreen</strong> — <code>aria-live="polite"</code> status regions, <code>role="alert"</code> for errors</li>

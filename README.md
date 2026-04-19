@@ -44,10 +44,10 @@ const { canStart, readyCount } = useRoomState(room);
 
 | Category | Exports |
 |----------|---------|
-| **Components** | `PlayerSlotsGrid`, `PlayerSlotView`, `PlayerScreen`, `RoomQRCode`, `JoinGame`, `RoomInfoModal`, `StartGameButton` |
+| **Components** | `PlayerSlotsGrid`, `PlayerSlotView`, `PlayerScreen`, `RoomQRCode`, `JoinGame`, `RoomInfoModal`, `HostDeviceWarningModal`, `StartGameButton` |
 | **Helpers** | `createInitialRoom`, `joinPlayer`, `startGame`, `resetPlayer`, `setPlayerJoining`, `setPlayerReady`, `findFirstEmptySlot`, `deserializeRoom` |
 | **Hook** | `useRoomState` — derived state with `canStart`, `readyCount`, `readyPlayers`, `emptySlots`, `activePlayers`, `playerNames` |
-| **Utils** | `generateRoomId`, `buildRoomUrl`, `buildPlayerUrl`, `buildJoinUrl`, `buildRejoinUrl`, `parseRoomFromUrl` |
+| **Utils** | `generateRoomId`, `buildRoomUrl`, `buildPlayerUrl`, `buildJoinUrl`, `buildRejoinUrl`, `parseRoomFromUrl`, `isLikelyMobileHost` |
 
 ## Key Features
 

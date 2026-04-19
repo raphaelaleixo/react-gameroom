@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Added
+- `HostDeviceWarningModal` component — native `<dialog>`-based confirmation modal for gating "become the host" flows on phones and small tablets. Customizable labels (title, body, confirmLabel, cancelLabel); Escape and backdrop click trigger `onCancel`.
+- `isLikelyMobileHost` util — returns `true` when the environment has a coarse pointer AND viewport ≤ 900px. Uses `matchMedia`, SSR-safe. Snapshot, not reactive — intended as a one-shot gate.
+
 ## 0.8.0
 
 ### Breaking

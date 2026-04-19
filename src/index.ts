@@ -46,6 +46,12 @@ export type { JoinGameProps, JoinGameLabels } from "./components/JoinGame";
 export { RoomInfoModal } from "./components/RoomInfoModal";
 export type { RoomInfoModalProps, RoomInfoModalLabels } from "./components/RoomInfoModal";
 
+export { HostDeviceWarningModal } from "./components/HostDeviceWarningModal";
+export type {
+  HostDeviceWarningModalProps,
+  HostDeviceWarningModalLabels,
+} from "./components/HostDeviceWarningModal";
+
 // Utils
 export {
   generateRoomId,
@@ -55,3 +61,5 @@ export {
   buildRejoinUrl,
   parseRoomFromUrl,
 } from "./utils/roomUtils";
+
+export { isLikelyMobileHost } from "./utils/isLikelyMobileHost";
