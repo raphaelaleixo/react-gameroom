@@ -332,8 +332,8 @@ function handleBecomeHost() {
             <td>Parses a URL and returns <code>{"{ roomId, playerId?, isJoin?, isRejoin? }"}</code> or <code>null</code>. Returns <code>isJoin: true</code> for <code>/room/{"{roomId}"}/player</code>, <code>isRejoin: true</code> for <code>/room/{"{roomId}"}/players</code>.</td>
           </tr>
           <tr>
-            <td><code>isLikelyMobileHost()</code></td>
-            <td>Returns <code>true</code> when the environment looks like a phone or small tablet (coarse pointer AND viewport ≤ 900px). Uses <code>matchMedia</code>, SSR-safe (returns <code>false</code> when <code>window</code> is unavailable). Returns a snapshot — not reactive to viewport changes. Pair with <code>HostDeviceWarningModal</code> to gate the "become host" flow.</td>
+            <td><code>isLikelyMobileHost(options?)</code></td>
+            <td>Returns <code>true</code> when the environment looks like a phone or small tablet (coarse pointer AND viewport ≤ <code>maxWidth</code>). Options: <code>{"{ maxWidth?: number }"}</code> (default 900). Uses <code>matchMedia</code>, SSR-safe (returns <code>false</code> when <code>window</code> is unavailable). Returns a snapshot — not reactive to viewport changes. Pair with <code>HostDeviceWarningModal</code> to gate the "become host" flow.</td>
           </tr>
         </tbody>
       </table>
@@ -341,7 +341,7 @@ function handleBecomeHost() {
       <h2>Accessibility</h2>
       <ul>
         <li><strong>RoomInfoModal</strong> — native <code>&lt;dialog&gt;</code> with <code>showModal()</code>, built-in <code>aria-modal</code>, focus trapping, Escape to close</li>
-        <li><strong>HostDeviceWarningModal</strong> — native <code>&lt;dialog&gt;</code> with <code>showModal()</code>, <code>aria-labelledby</code>, Escape and backdrop click trigger <code>onCancel</code></li>
+        <li><strong>HostDeviceWarningModal</strong> — native <code>&lt;dialog&gt;</code> with <code>showModal()</code>, <code>role="alertdialog"</code> (signals "warning" to screen readers), <code>aria-labelledby</code>, Escape and backdrop click trigger <code>onCancel</code></li>
         <li><strong>RoomQRCode</strong> — <code>role="img"</code> with descriptive <code>aria-label</code></li>
         <li><strong>JoinGame</strong> — visible <code>&lt;label&gt;</code> and <code>aria-required</code></li>
         <li><strong>PlayerScreen</strong> — <code>aria-live="polite"</code> status regions, <code>role="alert"</code> for errors</li>

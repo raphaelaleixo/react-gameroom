@@ -78,6 +78,7 @@ export function HostDeviceWarningModal({
   return (
     <dialog
       ref={dialogRef}
+      role="alertdialog"
       className={className}
       aria-labelledby={headingId}
       onClick={handleBackdropClick}

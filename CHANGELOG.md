@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1
+
+### Added
+- `isLikelyMobileHost` now accepts an optional `{ maxWidth }` argument (default 900) to support tablet-host paths without forking the helper.
+- `IsLikelyMobileHostOptions` type export.
+
+### Changed
+- `HostDeviceWarningModal`: `<dialog>` now has `role="alertdialog"` to signal "warning" semantics to screen readers.
+
 ## 0.9.0
 
 ### Added

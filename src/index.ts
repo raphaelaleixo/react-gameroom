@@ -63,3 +63,4 @@ export {
 } from "./utils/roomUtils";
 
 export { isLikelyMobileHost } from "./utils/isLikelyMobileHost";
+export type { IsLikelyMobileHostOptions } from "./utils/isLikelyMobileHost";

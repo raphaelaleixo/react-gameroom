@@ -111,12 +111,12 @@ parseRoomFromUrl(url): { roomId: string; playerId?: number; isJoin?: boolean; is
   Parses /room/{id}, /room/{id}/player/{n}, /room/{id}/player, and /room/{id}/players.
   Returns isJoin: true for join URL, isRejoin: true for rejoin grid URL.
 
-isLikelyMobileHost(): boolean
+isLikelyMobileHost(options?: { maxWidth?: number }): boolean
   Returns true when the environment looks like a phone or small tablet: the primary
-  pointer is coarse AND the viewport is <= 900px wide. Uses matchMedia, SSR-safe
-  (returns false when window/matchMedia are unavailable). Snapshot, not reactive —
-  intended as a one-shot gate for "become the host" flows. Pair with
-  HostDeviceWarningModal.
+  pointer is coarse AND the viewport is <= maxWidth px wide (default 900). Uses
+  matchMedia, SSR-safe (returns false when window/matchMedia are unavailable).
+  Snapshot, not reactive — intended as a one-shot gate for "become the host" flows.
+  Raise maxWidth if you support a tablet-host path. Pair with HostDeviceWarningModal.
 
 ## Example
 
@@ -161,8 +161,9 @@ rejoinLink/rejoinLinkAria.
 
 HostDeviceWarningModal is a confirmation dialog for gating "become the host" flows
 on phones and small tablets, where the big-screen layout is cramped. Uses native
-<dialog>.showModal() for focus trapping, Escape to close, and a backdrop. Both
-Escape and backdrop clicks trigger onCancel. Props: open, onConfirm, onCancel,
-className, confirmButtonClassName, cancelButtonClassName, labels (title, body,
-confirmLabel, cancelLabel). Pair with isLikelyMobileHost() to decide whether to
-show the modal before entering host mode.
+<dialog>.showModal() for focus trapping, Escape to close, and a backdrop. The
+dialog sets role="alertdialog" to signal "warning" to screen readers. Both Escape
+and backdrop clicks trigger onCancel. Props: open, onConfirm, onCancel, className,
+confirmButtonClassName, cancelButtonClassName, labels (title, body, confirmLabel,
+cancelLabel). Pair with isLikelyMobileHost() to decide whether to show the modal
+before entering host mode.
