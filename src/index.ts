@@ -23,6 +23,9 @@ export {
 export { useRoomState } from "./hooks/useRoomState";
 export type { RoomDerivedState } from "./hooks/useRoomState";
 
+export { useFullscreen } from "./hooks/useFullscreen";
+export type { UseFullscreenResult } from "./hooks/useFullscreen";
+
 // Components
 export { PlayerSlotView } from "./components/PlayerSlotView";
 export type { PlayerSlotViewProps, PlayerSlotLabels } from "./components/PlayerSlotView";
@@ -51,6 +54,12 @@ export type {
   HostDeviceWarningModalProps,
   HostDeviceWarningModalLabels,
 } from "./components/HostDeviceWarningModal";
+
+export { FullscreenToggle } from "./components/FullscreenToggle";
+export type {
+  FullscreenToggleProps,
+  FullscreenToggleLabels,
+} from "./components/FullscreenToggle";
 
 // Utils
 export {
