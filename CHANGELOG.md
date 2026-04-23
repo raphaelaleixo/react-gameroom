@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0
+
+### Added
+- `useFullscreen` hook — wraps the page-level Fullscreen API. Returns `{ isFullscreen, isSupported, toggle }`. Subscribes to `fullscreenchange` so `isFullscreen` stays in sync with ESC and browser-UI exits. SSR-safe; `isSupported` is `false` on platforms without the API (e.g. iPhone Safari).
+- `FullscreenToggle` component — drop-in label-only button built on `useFullscreen`. Props: `className`, `labels` (`enter`/`exit` overrides), `hideWhenUnsupported` (default `true`). Includes `aria-pressed` for screen-reader toggle semantics. Returns `null` on unsupported platforms by default.
+
 ## 0.9.1
 
 ### Added
