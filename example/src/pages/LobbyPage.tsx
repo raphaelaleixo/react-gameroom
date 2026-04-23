@@ -7,6 +7,7 @@ import {
   RoomQRCode,
   RoomInfoModal,
   StartGameButton,
+  FullscreenToggle,
   buildRoomUrl,
   buildPlayerUrl,
 } from "react-gameroom";
@@ -159,6 +160,7 @@ export function LobbyPage() {
         onStart={updateRoom}
         className="btn"
       />
+      <FullscreenToggle />
     </div>
   );
 }
