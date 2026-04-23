@@ -51,6 +51,7 @@ export function FullscreenToggle({
       type="button"
       className={className}
       disabled={!isSupported}
+      aria-pressed={isFullscreen}
       onClick={toggle}
     >
       {isFullscreen ? labels.exit : labels.enter}
