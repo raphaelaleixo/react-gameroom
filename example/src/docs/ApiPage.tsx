@@ -97,7 +97,7 @@ interface RoomDerivedState<T = unknown> {
         </tbody>
       </table>
 
-      <h2>Hook</h2>
+      <h2>Hooks</h2>
 
       <h3>useRoomState(roomState): RoomDerivedState</h3>
       <p>
@@ -377,6 +377,7 @@ function handleBecomeHost() {
         <li><strong>PlayerScreen</strong> — <code>aria-live="polite"</code> status regions, <code>role="alert"</code> for errors</li>
         <li><strong>PlayerSlotView</strong> — contextual <code>aria-label</code>s, <code>aria-live="polite"</code> status</li>
         <li><strong>PlayerSlotsGrid</strong> — <code>role="list"</code> with <code>aria-label</code></li>
+        <li><code>FullscreenToggle</code> — <code>aria-pressed</code> on the button reflects fullscreen state for screen-reader toggle semantics.</li>
       </ul>
 
       <div className="docs-next-page">
