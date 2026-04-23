@@ -109,6 +109,19 @@ interface RoomDerivedState<T = unknown> {
         provide the filtered slots directly, eliminating the need to re-derive them from counts.
       </p>
 
+      <h3>useFullscreen()</h3>
+      <p>
+        React hook for the page-level Fullscreen API. Subscribes to <code>fullscreenchange</code>{" "}
+        so <code>isFullscreen</code> stays in sync when the user exits with ESC or via the browser UI.
+        <code>isSupported</code> is <code>false</code> on platforms without the Fullscreen API
+        (e.g. iPhone Safari) and during SSR.
+      </p>
+      <CodeBlock language="ts">{`function useFullscreen(): {
+  isFullscreen: boolean;
+  isSupported: boolean;
+  toggle: () => void;
+}`}</CodeBlock>
+
       <h2>Components</h2>
 
       <p>
@@ -234,6 +247,23 @@ interface RoomDerivedState<T = unknown> {
   onStart={updateRoom}
   labels={{ start: "Begin Round" }}
 />`}</CodeBlock>
+
+      <h3>{"<FullscreenToggle>"}</h3>
+      <p>
+        Drop-in button that toggles page fullscreen via <code>useFullscreen</code>. Label-only
+        (no icons) for parity with <code>StartGameButton</code>. Hidden by default on platforms
+        without the Fullscreen API.
+      </p>
+      <CodeBlock language="tsx">{`<FullscreenToggle
+  className="btn"
+  labels={{ enter: "Fullscreen", exit: "Exit fullscreen" }}
+  hideWhenUnsupported // default true
+/>`}</CodeBlock>
+      <CodeBlock language="ts">{`interface FullscreenToggleProps {
+  className?: string;
+  labels?: { enter?: string; exit?: string };
+  hideWhenUnsupported?: boolean; // default: true
+}`}</CodeBlock>
 
       <h3>{"<RoomInfoModal>"}</h3>
       <p>

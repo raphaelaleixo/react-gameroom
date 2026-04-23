@@ -88,6 +88,12 @@ useRoomState(roomState: RoomState): RoomDerivedState
   playerNames, isLobby, isStarted. Array fields provide the filtered
   slots directly, eliminating the need to re-derive them from counts.
 
+useFullscreen(): { isFullscreen: boolean; isSupported: boolean; toggle: () => void }
+  React hook for the page-level Fullscreen API. Subscribes to fullscreenchange
+  so isFullscreen stays in sync when the user exits with ESC or via the browser UI.
+  isSupported is false on platforms without the Fullscreen API (e.g. iPhone Safari)
+  and during SSR.
+
 ## Utils
 
 generateRoomId(length?: number): string
@@ -144,7 +150,11 @@ are met. Calls startGame internally and passes the transitioned RoomState to
 onStart. Automatically disables when canStart is false. Accepts labels prop
 for i18n ({ start?: string }).
 
-Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, StartGameButton, RoomInfoModal) accept
+FullscreenToggle: a button that toggles page fullscreen via the Fullscreen API.
+Built on useFullscreen. Returns null when the API is unsupported (e.g. iPhone)
+unless hideWhenUnsupported={false} is passed. Label-only — no icons shipped.
+
+Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, StartGameButton, FullscreenToggle, RoomInfoModal) accept
 an optional `labels` prop to customize all hardcoded UI strings (button text, status
 labels, headings). This enables i18n and alternative lobby flows (e.g., view-only
 slots in first-come-first-served mode show "Empty" instead of a "Join" button when
