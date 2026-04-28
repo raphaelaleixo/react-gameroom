@@ -7,6 +7,7 @@ import { ExamplesPage } from "./docs/ExamplesPage";
 import { HomePage } from "./pages/HomePage";
 import { JoinGamePage } from "./pages/JoinGamePage";
 import { LobbyPage } from "./pages/LobbyPage";
+import { PlayerEntryPage } from "./pages/PlayerEntryPage";
 import { PlayerPage } from "./pages/PlayerPage";
 
 export function App() {
@@ -24,6 +25,7 @@ export function App() {
       <Route path="/play" element={<HomePage />} />
       <Route path="/play/join" element={<JoinGamePage />} />
       <Route path="/play/room/:roomId" element={<LobbyPage />} />
+      <Route path="/play/room/:roomId/player" element={<PlayerEntryPage />} />
       <Route path="/play/room/:roomId/player/:playerId" element={<PlayerPage />} />
     </Routes>
   );
