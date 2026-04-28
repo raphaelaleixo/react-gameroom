@@ -46,6 +46,9 @@ export type { StartGameButtonProps, StartGameButtonLabels } from "./components/S
 export { JoinGame } from "./components/JoinGame";
 export type { JoinGameProps, JoinGameLabels } from "./components/JoinGame";
 
+export { PlayerEntryScreen } from "./components/PlayerEntryScreen";
+export type { PlayerEntryScreenProps, PlayerEntryScreenLabels } from "./components/PlayerEntryScreen";
+
 export { RoomInfoModal } from "./components/RoomInfoModal";
 export type { RoomInfoModalProps, RoomInfoModalLabels } from "./components/RoomInfoModal";
 
