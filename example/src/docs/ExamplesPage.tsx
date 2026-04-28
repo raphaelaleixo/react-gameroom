@@ -35,7 +35,7 @@ export function ExamplesPage() {
 
       <h2>Routing</h2>
 
-      <p>Four routes map directly to the URL conventions established by react-gameroom:</p>
+      <p>Five routes map directly to the URL conventions established by react-gameroom:</p>
 
       <CodeBlock language="tsx">{`<Routes>
   <Route path="/" element={<HomePage />} />
