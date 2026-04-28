@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+### Added
+- `PlayerEntryScreen` component — drop-in landing screen for the `/room/{id}/player` route. Renders a name form when the lobby has space (auto-resolves the first empty slot via `findFirstEmptySlot` and hands `(name, slotId)` to `onJoin`), a "lobby full" message when all seats are taken pre-start, or a seat-rejoin link grid for filled slots once the game has started. Each branch is replaceable via `renderForm`, `renderStarted`, and `renderFull` render props; the form's `submit(name)` helper drives the same `isSubmitting` flow when overridden.
+- `RoomInfoModal`: optional `qrUrl?` prop — overrides the auto-derived QR URL with a custom value (e.g., a short link or deep link). The link list still uses the derived per-player URLs; only the QR target changes.
+
 ## 0.10.0
 
 ### Added
