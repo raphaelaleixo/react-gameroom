@@ -154,7 +154,7 @@ FullscreenToggle: a button that toggles page fullscreen via the Fullscreen API.
 Built on useFullscreen. Returns null when the API is unsupported (e.g. iPhone)
 unless hideWhenUnsupported={false} is passed. Label-only — no icons shipped.
 
-Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, StartGameButton, FullscreenToggle, RoomInfoModal) accept
+Components (PlayerSlotView, PlayerSlotsGrid, PlayerScreen, PlayerEntryScreen, StartGameButton, FullscreenToggle, RoomInfoModal) accept
 an optional `labels` prop to customize all hardcoded UI strings (button text, status
 labels, headings). This enables i18n and alternative lobby flows (e.g., view-only
 slots in first-come-first-served mode show "Empty" instead of a "Join" button when
@@ -166,8 +166,18 @@ PlayerSlotsGrid accepts filterEmpty: when true, only non-empty slots are rendere
 
 RoomInfoModal is status-aware: during lobby, QR code points to buildJoinUrl and
 links say "Join". When game is started, QR points to buildRejoinUrl and links say
-"Rejoin". Pass basePath prop to set URL prefix. Labels are customizable via
+"Rejoin". Pass basePath prop to set URL prefix. Pass qrUrl to override the
+auto-derived QR target with a custom URL (e.g., a short link or deep link); the
+link list still uses the derived player URLs. Labels are customizable via
 rejoinLink/rejoinLinkAria.
+
+PlayerEntryScreen is the landing component for the /room/{id}/player route. In
+lobby mode with an empty slot, it renders a name form and resolves the slot via
+findFirstEmptySlot, calling onJoin(name, slotId) on submit. With no empty slot,
+it shows a "lobby full" message. After startGame, it renders a seat-rejoin link
+grid (anchors to /room/{id}/player/{n}) for filled slots only. Each branch is
+replaceable via renderForm, renderStarted, and renderFull render props; the
+form's submit helper drives the same isSubmitting flow when overridden.
 
 HostDeviceWarningModal is a confirmation dialog for gating "become the host" flows
 on phones and small tablets, where the big-screen layout is cramped. Uses native
