@@ -40,11 +40,17 @@ export interface RoomInfoModalProps {
   linkClassName?: string;
   /** Optional base path for URL generation (e.g., "/app"). */
   basePath?: string;
+  /**
+   * Override the QR-encoded URL. When omitted, derived from roomState.status + basePath
+   * (lobby → buildJoinUrl, started → buildRejoinUrl).
+   * Only affects the QR code; the link list still derives /room/{id}/player/{n} URLs internally.
+   */
+  qrUrl?: string;
   /** Custom labels for modal text. */
   labels?: RoomInfoModalLabels;
 }
 
-export function RoomInfoModal({ roomState, open, onClose, className, closeButtonClassName, linkClassName, basePath, labels: labelsProp }: RoomInfoModalProps) {
+export function RoomInfoModal({ roomState, open, onClose, className, closeButtonClassName, linkClassName, basePath, qrUrl, labels: labelsProp }: RoomInfoModalProps) {
   const labels = { ...defaultLabels, ...labelsProp };
   const isStarted = roomState.status === "started";
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -79,9 +85,10 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
   }
 
   const headingId = `room-info-title-${roomState.roomId}`;
-  const qrUrl = isStarted
+  const derivedQrUrl = isStarted
     ? buildRejoinUrl(roomState.roomId, basePath)
     : buildJoinUrl(roomState.roomId, basePath);
+  const finalQrUrl = qrUrl ?? derivedQrUrl;
   const linkLabel = isStarted ? labels.rejoinLink : labels.joinLink;
   const linkAria = isStarted ? labels.rejoinLinkAria : labels.joinLinkAria;
 
@@ -105,7 +112,7 @@ export function RoomInfoModal({ roomState, open, onClose, className, closeButton
       <h3 id={headingId}>{labels.roomHeading} {roomState.roomId}</h3>
 
       <div data-room-info-qr="">
-        <RoomQRCode roomId={roomState.roomId} url={qrUrl} size={160} />
+        <RoomQRCode roomId={roomState.roomId} url={finalQrUrl} size={160} />
       </div>
 
       <div data-room-info-links="">
