@@ -265,6 +265,32 @@ interface RoomDerivedState<T = unknown> {
   hideWhenUnsupported?: boolean; // default: true
 }`}</CodeBlock>
 
+      <h3>{"<PlayerEntryScreen>"}</h3>
+      <p>
+        Player landing screen for the <code>/room/{"{id}"}/player</code> route. Renders a name form
+        when the lobby has space, a seat-link grid once the game has started, or a "lobby full"
+        message in between.
+      </p>
+
+      <CodeBlock language="tsx">{`<PlayerEntryScreen
+  roomState={room}
+  onJoin={async (name, slotId) => {
+    await persist(joinPlayer(room, slotId, name));
+  }}
+/>`}</CodeBlock>
+
+      <p>Each branch is replaceable via render props:</p>
+
+      <CodeBlock language="tsx">{`<PlayerEntryScreen
+  roomState={room}
+  onJoin={handleJoin}
+  renderForm={({ submit, isSubmitting }) => (
+    <MyForm onSubmit={(name) => submit(name)} disabled={isSubmitting} />
+  )}
+  renderStarted={() => <MyRejoinGrid players={room.players} />}
+  renderFull={() => <p>The lobby is full.</p>}
+/>`}</CodeBlock>
+
       <h3>{"<RoomInfoModal>"}</h3>
       <p>
         A <code>&lt;dialog&gt;</code>-based modal that displays the room code, QR code, and player
@@ -291,6 +317,12 @@ interface RoomDerivedState<T = unknown> {
   onClose={() => setShowInfo(false)}
   labels={{ roomHeading: "Sala:", joinLink: "Entrar" }}
 />`}</CodeBlock>
+
+      <p>
+        Pass <code>qrUrl</code> to override the auto-derived QR URL. When omitted, the QR code
+        points at <code>buildJoinUrl</code> during lobby and <code>buildRejoinUrl</code> after the
+        game starts. Useful when the QR should point at a custom landing page, deep link, or short URL.
+      </p>
 
       <h3>{"<HostDeviceWarningModal>"}</h3>
       <p>
@@ -374,6 +406,7 @@ function handleBecomeHost() {
         <li><strong>HostDeviceWarningModal</strong> — native <code>&lt;dialog&gt;</code> with <code>showModal()</code>, <code>role="alertdialog"</code> (signals "warning" to screen readers), <code>aria-labelledby</code>, Escape and backdrop click trigger <code>onCancel</code></li>
         <li><strong>RoomQRCode</strong> — <code>role="img"</code> with descriptive <code>aria-label</code></li>
         <li><strong>JoinGame</strong> — visible <code>&lt;label&gt;</code> and <code>aria-required</code></li>
+        <li><strong>PlayerEntryScreen</strong> — visible <code>&lt;label&gt;</code> and <code>aria-required</code> on the form, <code>role="status"</code> with <code>aria-live="polite"</code> on the lobby-full message</li>
         <li><strong>PlayerScreen</strong> — <code>aria-live="polite"</code> status regions, <code>role="alert"</code> for errors</li>
         <li><strong>PlayerSlotView</strong> — contextual <code>aria-label</code>s, <code>aria-live="polite"</code> status</li>
         <li><strong>PlayerSlotsGrid</strong> — <code>role="list"</code> with <code>aria-label</code></li>

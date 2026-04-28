@@ -23,6 +23,7 @@ export function ExamplesPage() {
   pages/
     HomePage.tsx        # "New Game" / "Join Game" buttons
     JoinGamePage.tsx    # Room code entry form
+    PlayerEntryPage.tsx # Auto-assign first empty slot, or rejoin grid if started
     LobbyPage.tsx       # Host view + game result display
     PlayerPage.tsx      # Player view + move selection
   hooks/
@@ -40,6 +41,7 @@ export function ExamplesPage() {
   <Route path="/" element={<HomePage />} />
   <Route path="/join" element={<JoinGamePage />} />
   <Route path="/room/:roomId" element={<LobbyPage />} />
+  <Route path="/room/:roomId/player" element={<PlayerEntryPage />} />
   <Route path="/room/:roomId/player/:playerId" element={<PlayerPage />} />
 </Routes>`}</CodeBlock>
 
@@ -47,6 +49,7 @@ export function ExamplesPage() {
         <li><code>/</code> — the landing page where a host creates a game or a player chooses to join</li>
         <li><code>/join</code> — the room code entry screen</li>
         <li><code>/room/:roomId</code> — the host's lobby and game view</li>
+        <li><code>/room/:roomId/player</code> — first-come-first-served seat-assignment landing</li>
         <li><code>/room/:roomId/player/:playerId</code> — a player's view (on their phone)</li>
       </ul>
 

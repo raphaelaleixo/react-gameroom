@@ -55,7 +55,7 @@ const { canStart, readyCount } = useRoomState(room);
         <tbody>
           <tr>
             <td><strong>Components</strong></td>
-            <td><code>PlayerSlotsGrid</code>, <code>PlayerSlotView</code>, <code>PlayerScreen</code>, <code>RoomQRCode</code>, <code>JoinGame</code>, <code>RoomInfoModal</code>, <code>StartGameButton</code></td>
+            <td><code>PlayerSlotsGrid</code>, <code>PlayerSlotView</code>, <code>PlayerScreen</code>, <code>PlayerEntryScreen</code>, <code>RoomQRCode</code>, <code>JoinGame</code>, <code>RoomInfoModal</code>, <code>StartGameButton</code></td>
           </tr>
           <tr>
             <td><strong>Helpers</strong></td>

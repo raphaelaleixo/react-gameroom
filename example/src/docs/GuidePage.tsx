@@ -64,7 +64,8 @@ const { readyCount } = useRoomState(roomState);
 
       <h2>5. Optionally, let players rejoin</h2>
       <p>
-        Use <code>JoinGame</code> for a room code entry form, and <code>RoomInfoModal</code> to
+        Use <code>JoinGame</code> for a room code entry form, <code>PlayerEntryScreen</code> for the
+        per-room player landing route (<code>/room/{"{id}"}/player</code>), and <code>RoomInfoModal</code> to
         show room info and QR codes during gameplay.
       </p>
 
