@@ -230,6 +230,32 @@ interface RoomDerivedState<T = unknown> {
   labels={{ label: "Código da sala", placeholder: "Digite o código", submit: "Entrar", submitting: "Entrando…" }}
 />`}</CodeBlock>
 
+      <h3>{"<PlayerEntryScreen>"}</h3>
+      <p>
+        Player landing screen for the <code>/room/{"{id}"}/player</code> route. Renders a name form
+        when the lobby has space, a seat-link grid once the game has started, or a "lobby full"
+        message in between.
+      </p>
+
+      <CodeBlock language="tsx">{`<PlayerEntryScreen
+  roomState={room}
+  onJoin={async (name, slotId) => {
+    await persist(joinPlayer(room, slotId, name));
+  }}
+/>`}</CodeBlock>
+
+      <p>Each branch is replaceable via render props:</p>
+
+      <CodeBlock language="tsx">{`<PlayerEntryScreen
+  roomState={room}
+  onJoin={handleJoin}
+  renderForm={({ submit, isSubmitting }) => (
+    <MyForm onSubmit={(name) => submit(name)} disabled={isSubmitting} />
+  )}
+  renderStarted={() => <MyRejoinGrid players={room.players} />}
+  renderFull={() => <p>The lobby is full.</p>}
+/>`}</CodeBlock>
+
       <h3>{"<StartGameButton>"}</h3>
       <p>
         A button that starts the game when lobby readiness conditions are met.
@@ -264,32 +290,6 @@ interface RoomDerivedState<T = unknown> {
   labels?: { enter?: string; exit?: string };
   hideWhenUnsupported?: boolean; // default: true
 }`}</CodeBlock>
-
-      <h3>{"<PlayerEntryScreen>"}</h3>
-      <p>
-        Player landing screen for the <code>/room/{"{id}"}/player</code> route. Renders a name form
-        when the lobby has space, a seat-link grid once the game has started, or a "lobby full"
-        message in between.
-      </p>
-
-      <CodeBlock language="tsx">{`<PlayerEntryScreen
-  roomState={room}
-  onJoin={async (name, slotId) => {
-    await persist(joinPlayer(room, slotId, name));
-  }}
-/>`}</CodeBlock>
-
-      <p>Each branch is replaceable via render props:</p>
-
-      <CodeBlock language="tsx">{`<PlayerEntryScreen
-  roomState={room}
-  onJoin={handleJoin}
-  renderForm={({ submit, isSubmitting }) => (
-    <MyForm onSubmit={(name) => submit(name)} disabled={isSubmitting} />
-  )}
-  renderStarted={() => <MyRejoinGrid players={room.players} />}
-  renderFull={() => <p>The lobby is full.</p>}
-/>`}</CodeBlock>
 
       <h3>{"<RoomInfoModal>"}</h3>
       <p>
