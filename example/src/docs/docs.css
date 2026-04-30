@@ -3,21 +3,29 @@
    ======================================== */
 
 :root {
-  --docs-bg: #0f0f17;
-  --docs-surface: #1a1a2e;
-  --docs-border: #2a2a40;
-  --docs-accent: #e94560;
-  --docs-accent-soft: rgba(233, 69, 96, 0.15);
-  --docs-text: #e0e0e0;
-  --docs-text-dim: #888;
+  --docs-bg: #0a1414;
+  --docs-surface: #020606;
+  --docs-border: #1a2a2a;
+  --docs-accent: #7fffd4;
+  --docs-accent-soft: rgba(127, 255, 212, 0.15);
+  --docs-text: #efe9d8;
+  --docs-text-dim: #8aa1a1;
   --docs-text-bright: #ffffff;
-  --docs-code-bg: #141422;
+  --docs-code-bg: #010505;
   --docs-sidebar-w: 220px;
   --docs-content-max: 780px;
   --docs-header-h: 56px;
+  --docs-font-body: "DM Sans", system-ui, sans-serif;
+  --docs-font-heading: "Space Grotesk", "DM Sans", sans-serif;
 }
 
 /* ---- Layout ---- */
+
+body:has(.docs-shell) {
+  background: var(--docs-bg);
+  color: var(--docs-text);
+  font-family: var(--docs-font-body);
+}
 
 .docs-header {
   position: fixed;
@@ -32,14 +40,16 @@
   justify-content: space-between;
   padding: 0 24px;
   z-index: 100;
+  font-family: var(--docs-font-body);
 }
 
 .docs-header-title {
+  font-family: var(--docs-font-heading);
   font-size: 16px;
   font-weight: 700;
   color: var(--docs-text-bright);
   text-decoration: none;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.01em;
 }
 
 .docs-header-title span {
@@ -66,7 +76,7 @@
 .docs-demo-link {
   padding: 6px 16px;
   background: var(--docs-accent);
-  color: var(--docs-text-bright) !important;
+  color: var(--docs-bg) !important;
   border-radius: 6px;
   font-weight: 600;
   font-size: 13px;
@@ -81,6 +91,9 @@
   display: flex;
   min-height: 100vh;
   padding-top: var(--docs-header-h);
+  font-family: var(--docs-font-body);
+  background: var(--docs-bg);
+  color: var(--docs-text);
 }
 
 .docs-sidebar {
@@ -135,9 +148,17 @@
 
 /* ---- Typography ---- */
 
+.docs-content h1,
+.docs-content h2,
+.docs-content h3,
+.docs-content h4 {
+  font-family: var(--docs-font-heading);
+}
+
 .docs-content h1 {
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   color: var(--docs-text-bright);
   margin: 0 0 8px;
   line-height: 1.2;
@@ -146,6 +167,7 @@
 .docs-content h2 {
   font-size: 22px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--docs-text-bright);
   margin: 48px 0 16px;
   padding-bottom: 8px;
@@ -159,6 +181,7 @@
 .docs-content h3 {
   font-size: 17px;
   font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--docs-text-bright);
   margin: 32px 0 12px;
 }
@@ -243,19 +266,19 @@
 }
 
 .code-block .comment {
-  color: #555;
+  color: #5a7070;
 }
 
 .code-block .keyword {
-  color: #c792ea;
+  color: #c8a3ff;
 }
 
 .code-block .string {
-  color: #c3e88d;
+  color: #7fffd4;
 }
 
 .code-block .type {
-  color: #ffcb6b;
+  color: #ffd166;
 }
 
 /* ---- Tables ---- */
